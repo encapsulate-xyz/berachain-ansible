@@ -23,7 +23,6 @@ bera:
         json_rpc_port: 8545
         metrics_port: 6060
     consensus:
-      chain_id: bartio-beacon-80084
       source_url: https://github.com/berachain/beacon-kit
       ports:
         prefix: 100
