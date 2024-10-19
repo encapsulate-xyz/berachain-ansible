@@ -1,0 +1,40 @@
+---
+org: encapsulate
+
+default_node_types:
+  - validator
+  - default
+
+tmp_dir: /tmp
+
+go:
+  root: /usr/local/go
+  path: "{{ tmp_dir }}/go"
+  module111: "on"
+
+bera:
+  validator:
+    execution:
+      source_url: https://github.com/NethermindEth/nethermind/releases/download
+      ports:
+        engine_port: 8551
+        network_discovery_port: 30303
+        p2p_port: 30303
+        json_rpc_port: 8545
+        metrics_port: 6060
+    consensus:
+      chain_id: bartio-beacon-80084
+      source_url: https://github.com/berachain/beacon-kit
+      ports:
+        prefix: 100
+        suffix:
+          # Used for both p2p_laddr and p2p_external_address
+          p2p: 56
+          rpc: 57
+          abci: 58
+          prometheus: 60
+          pprof: 61
+          rest_api: 17
+          rosetta: 80
+          grpc: 90
+          grpc_web: 91
