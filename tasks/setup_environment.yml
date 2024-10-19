@@ -41,7 +41,7 @@
     rosetta_port: "{{ vars[project][type][client].ports.prefix ~ vars[project][type][client].ports.suffix.rosetta }}"
     grpc_port: "{{ vars[project][type][client].ports.prefix ~ vars[project][type][client].ports.suffix.grpc }}"
     grpc_web_port: "{{ vars[project][type][client].ports.prefix ~ vars[project][type][client].ports.suffix.grpc_web }}"
-  when: vars[project][type][client].ports.prefix is defined
+  when: client == "consensus"
 
 - name: Display all port variables
   ansible.builtin.debug:
@@ -55,7 +55,7 @@
       - "Rosetta Port: {{ rosetta_port }}"
       - "gRPC Port: {{ grpc_port }}"
       - "gRPC-Web Port: {{ grpc_web_port }}"
-  when: vars[project][type][client].ports.prefix is defined
+  when: client == "consensus"
 
 - name: Confirm deployment details
   ansible.builtin.pause:
