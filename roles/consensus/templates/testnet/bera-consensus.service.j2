@@ -9,6 +9,7 @@ ExecStart={{consensus_bin_dir }}/{{ service_identifier }} start --home {{ consen
 Restart=always
 RestartSec=4
 LimitNOFILE=65536
+MemoryLimit=64G
 StandardOutput=append:{{consensus_log_file_path }}
 StandardError=inherit
 
