@@ -1,0 +1,97 @@
+---
+- name: Include user creation task
+  ansible.builtin.include_tasks: tasks/create_user_and_directories.yml
+  vars:
+    home: "{{ consensus_home_dir }}"
+    directories: "{{ consensus_directories }}"
+    log_file_path: "{{ consensus_log_file_path }}"
+
+- name: Include build binary task
+  ansible.builtin.include_tasks: build_binary.yml
+
+- name: Get genesis and configuration files
+  block:
+    - name: Copy configuration file
+      ansible.builtin.template:
+        src: "{{ env }}/config.toml.j2"
+        dest: "{{ consensus_config_file_path }}"
+        owner: "{{ service_identifier }}"
+        group: "{{ service_identifier }}"
+        mode: "0644"
+      notify:
+        - Restart service
+
+    - name: Copy app file
+      ansible.builtin.template:
+        src: "{{ env }}/app.toml.j2"
+        dest: "{{ consensus_app_file_path }}"
+        owner: "{{ service_identifier }}"
+        group: "{{ service_identifier }}"
+        mode: "0644"
+      notify:
+        - Restart service
+
+    - name: Copy client file
+      ansible.builtin.template:
+        src: "{{ env }}/client.toml.j2"
+        dest: "{{ consensus_client_file_path }}"
+        owner: "{{ service_identifier }}"
+        group: "{{ service_identifier }}"
+        mode: "0644"
+      notify:
+        - Restart service
+
+    - name: Copy genesis file
+      ansible.builtin.copy:
+        src: "{{ env }}/genesis.json"
+        dest: "{{ consensus_config_dir }}"
+        owner: "{{ service_identifier }}"
+        group: "{{ service_identifier }}"
+        mode: "0644"
+      notify:
+        - Restart service
+
+    - name: Copy kzg-trusted-setup file
+      ansible.builtin.copy:
+        src: "{{ env }}/kzg-trusted-setup.json"
+        dest: "{{ consensus_config_dir }}"
+        owner: "{{ service_identifier }}"
+        group: "{{ service_identifier }}"
+        mode: "0644"
+      notify:
+        - Restart service
+
+- name: Fetch secrets from HCP Vault and save to files
+  when: type == 'validator'
+  block:
+    - name: Fetch priv validator key and save
+      ansible.builtin.include_tasks: tasks/get_and_save_vault_secret.yml
+      vars:
+        vault_secret_source_path: "{{ project }}/{{ org }}/{{ type }}/{{ node_priv_validator_key_file_name }}"
+        secret_destination_path: "{{ node_priv_validator_key_path }}"
+        secret_type: key
+
+    - name: Fetch node key and save
+      ansible.builtin.include_tasks: tasks/get_and_save_vault_secret.yml
+      vars:
+        vault_secret_source_path: "{{ project }}/{{ org }}/{{ type }}/{{ node_node_key_file_name }}"
+        secret_destination_path: "{{ node_node_key_path }}"
+        secret_type: key
+
+    - name: Fetch jwtsecret and save
+      ansible.builtin.include_tasks: tasks/get_and_save_vault_secret.yml
+      vars:
+        vault_secret_source_path: "{{ project }}/{{ org }}/{{ type }}/{{ consensus_jwtsecret_file_name }}"
+        secret_destination_path: "{{ consensus_jwtsecret_path }}"
+        secret_type: key
+
+- name: Copy consensus client systemd service file
+  ansible.builtin.template:
+    src: "{{ env }}/bera-consensus.service.j2"
+    dest: /etc/systemd/system/{{ service_identifier }}.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - Reload service
+    - Restart service

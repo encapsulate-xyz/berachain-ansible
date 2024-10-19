@@ -1,0 +1,32 @@
+---
+- name: Set up bera node consensus client
+  hosts: all
+  become: true
+  gather_facts: true
+  vars:
+    allowed_node_types: [validator, fullnode]
+    client: consensus
+  vars_files:
+    - group_vars/all.yml
+    - group_vars/{{ env }}.yml
+    - group_vars/vault.yml
+
+  pre_tasks:
+    - name: Setup environment and dependencies
+      when: type in allowed_node_types
+      block:
+        - name: Include environment setup tasks
+          ansible.builtin.include_tasks: tasks/setup_environment.yml
+        - name: Include dependencies setup tasks
+          ansible.builtin.include_tasks: tasks/setup_dependencies.yml
+
+  tasks:
+    - name: Run consensus playbook
+      when: type in allowed_node_types
+      block:
+        - name: Include common handlers
+          ansible.builtin.include_role:
+            name: common
+        - name: Include consensus role
+          ansible.builtin.include_role:
+            name: consensus
