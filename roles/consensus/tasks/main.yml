@@ -80,7 +80,7 @@
 
 - name: Save jwtsecret
   ansible.builtin.copy:
-    content: "{{ vault.bera.jwtsecret }}"
+    content: "{{ vault.bera[env].jwtsecret }}"
     dest: "{{ consensus_jwtsecret_path }}"
     owner: "{{ service_identifier }}"
     group: "{{ service_identifier }}"
