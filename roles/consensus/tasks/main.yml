@@ -78,12 +78,13 @@
         secret_destination_path: "{{ node_node_key_path }}"
         secret_type: key
 
-    - name: Fetch jwtsecret and save
-      ansible.builtin.include_tasks: tasks/get_and_save_vault_secret.yml
-      vars:
-        vault_secret_source_path: "{{ project }}/{{ org }}/{{ type }}/{{ consensus_jwtsecret_file_name }}"
-        secret_destination_path: "{{ consensus_jwtsecret_path }}"
-        secret_type: key
+- name: Save jwtsecret
+  ansible.builtin.copy:
+    content: "{{ vault.bera.jwtsecret }}"
+    dest: "{{ consensus_jwtsecret_path }}"
+    owner: "{{ service_identifier }}"
+    group: "{{ service_identifier }}"
+    mode: "0644"
 
 - name: Copy consensus client systemd service file
   ansible.builtin.template:
