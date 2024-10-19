@@ -5,9 +5,7 @@ all:
   children:
     bera:
       hosts:
-        bridge.bera.mainnet.encapsulate.xyz:
-          type: bridge
         validator.bera.testnet.encapsulate.xyz:
           type: validator
-        fullnode.bera.mainnet.encapsulate.xyz:
+        fullnode.bera.testnet.encapsulate.xyz:
           type: fullnode
