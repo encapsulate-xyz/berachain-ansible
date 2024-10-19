@@ -1,0 +1,26 @@
+---
+- name: Create system user with home and nologin
+  ansible.builtin.user:
+    name: "{{ service_identifier }}"
+    system: true
+    home: "{{ home }}"
+    shell: /usr/sbin/nologin
+    createhome: true
+    state: present
+
+- name: Create directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ service_identifier }}"
+    group: "{{ service_identifier }}"
+    mode: "0755"
+  loop: "{{ directories }}"
+
+- name: Create log file for the service
+  ansible.builtin.file:
+    path: "{{ log_file_path }}"
+    state: touch
+    owner: "{{ service_identifier }}"
+    group: "{{ service_identifier }}"
+    mode: "0644"
