@@ -1,0 +1,13 @@
+---
+all:
+  vars:
+    env: testnet
+  children:
+    bera:
+      hosts:
+        bridge.bera.mainnet.encapsulate.xyz:
+          type: bridge
+        validator.bera.testnet.encapsulate.xyz:
+          type: validator
+        fullnode.bera.mainnet.encapsulate.xyz:
+          type: fullnode
