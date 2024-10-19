@@ -1,0 +1,62 @@
+---
+- name: Include user creation task
+  ansible.builtin.include_tasks: tasks/create_user_and_directories.yml
+  vars:
+    home: "{{ execution_home_dir }}"
+    directories: "{{ execution_directories }}"
+    log_file_path: "{{ execution_log_file_path }}"
+
+- name: Download binary
+  vars:
+    suffix_url: 1.29.1/nethermind-1.29.1-dfea5240-linux-x64.zip
+  block:
+    - name: Unarchive the binary
+      ansible.builtin.unarchive:
+        src: "{{ vars[project][type][client].source_url }}/{{ suffix_url }}"
+        dest: "{{ execution_bin_dir }}"
+        remote_src: true
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Rename binary file
+      ansible.builtin.copy:
+        src: "{{ execution_bin_dir }}/{{ execution_default_binary_name }}"
+        dest: "{{ execution_bin_dir }}/{{ service_identifier }}"
+        remote_src: true
+        owner: root
+        group: root
+        force: true
+        mode: "0755"
+      notify:
+        - Restart service
+
+- name: Fetch secrets from HCP Vault and save to files
+  block:
+    - name: Fetch jwtsecret and save
+      ansible.builtin.include_tasks: tasks/get_and_save_vault_secret.yml
+      vars:
+        vault_secret_source_path: "{{ project }}/{{ org }}/{{ type }}/{{ execution_jwtsecret_file_name }}"
+        secret_destination_path: "{{ execution_jwtsecret_path }}"
+        secret_type: key
+
+- name: Copy genesis file
+  ansible.builtin.copy:
+    src: "{{ env }}/eth-nether-genesis.json"
+    dest: "{{ execution_config_dir }}"
+    owner: "{{ service_identifier }}"
+    group: "{{ service_identifier }}"
+    mode: "0644"
+  notify:
+    - Restart service
+
+- name: Copy execution client systemd service file
+  ansible.builtin.template:
+    src: "{{ env }}/bera-execution.service.j2"
+    dest: /etc/systemd/system/{{ service_identifier }}.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - Reload service
+    - Restart service
