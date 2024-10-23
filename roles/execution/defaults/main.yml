@@ -17,4 +17,4 @@ execution_directories:
 
 execution_log_file_path: "{{ execution_log_dir }}/{{ service_identifier }}.log"
 execution_jwtsecret_path: "{{ execution_jwtsecret_dir }}/{{ execution_jwtsecret_file_name }}"
-execution_nether_genesis_file_path: "{{ execution_config_dir }}/{{ execution_nether_genesis_file_nam }}"
+execution_nether_genesis_file_path: "{{ execution_config_dir }}/{{ execution_nether_genesis_file_name }}"
