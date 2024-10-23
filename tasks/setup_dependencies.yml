@@ -20,6 +20,7 @@
     - chrony
     - lz4
     - yq
+    - unzip
 
 - name: Remove existing Go directories (if any)
   ansible.builtin.file:
