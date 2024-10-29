@@ -9,4 +9,4 @@ consensus_genesis_file_name: genesis.json
 consensus_chain_id: bartio-beacon-80084
 consensus_jwtsecret_file_name: jwt.hex
 consensus_default_binary_name: beacond
-consensus_execution_client_jsonrpc_endpoint: http://localhost:{{ vars[project][type].execution.ports.engine_port }}
+consensus_execution_client_jsonrpc_endpoint: http://localhost:{{ execution_engine_port }}
