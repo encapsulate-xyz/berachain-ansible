@@ -20,3 +20,4 @@ consensus_config_file_path: "{{ consensus_config_dir }}/{{ consensus_config_file
 consensus_client_file_path: "{{ consensus_config_dir }}/{{ consensus_client_file_name }}"
 consensus_app_file_path: "{{ consensus_config_dir }}/{{ consensus_app_file_name }}"
 consensus_jwt_secret_path: "{{ consensus_jwt_secret_dir }}/{{ consensus_jwt_secret_file_name }}"
+consensus_kzg_trusted_path: "{{ consensus_config_dir }}/{{ consensus_kzg_trusted_file_name }}"

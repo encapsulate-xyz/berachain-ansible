@@ -53,8 +53,8 @@
 
     - name: Copy kzg-trusted-setup file
       ansible.builtin.copy:
-        src: "{{ env }}/kzg-trusted-setup.json"
-        dest: "{{ consensus_config_dir }}"
+        src: "{{ env }}/kzg_trusted_setup.json"
+        dest: "{{ consensus_kzg_trusted_path }}"
         owner: "{{ service_identifier }}"
         group: "{{ service_identifier }}"
         mode: "0644"
