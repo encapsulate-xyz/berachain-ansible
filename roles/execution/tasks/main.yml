@@ -4,32 +4,9 @@
   vars:
     home: "{{ execution_home_dir }}"
     directories: "{{ execution_directories }}"
-    log_file_path: "{{ execution_log_file_path }}"
 
-- name: Download binary
-  vars:
-    suffix_url: 1.29.1/nethermind-1.29.1-dfea5240-linux-x64.zip
-  block:
-    - name: Unarchive the binary
-      ansible.builtin.unarchive:
-        src: "{{ vars[project][type][client].source_url }}/{{ suffix_url }}"
-        dest: "{{ execution_bin_dir }}"
-        remote_src: true
-        owner: root
-        group: root
-        mode: "0755"
-
-    - name: Rename binary file
-      ansible.builtin.copy:
-        src: "{{ execution_bin_dir }}/{{ execution_default_binary_name }}"
-        dest: "{{ execution_bin_dir }}/{{ service_identifier }}"
-        remote_src: true
-        owner: root
-        group: root
-        force: true
-        mode: "0755"
-      notify:
-        - Restart service
+- name: Include extract binary task
+  ansible.builtin.include_tasks: extract_binary.yml
 
 - name: Save jwtsecret
   ansible.builtin.template:
@@ -43,6 +20,26 @@
   ansible.builtin.copy:
     src: "{{ env }}/eth_nether_genesis.json"
     dest: "{{ execution_nether_genesis_file_path }}"
+    owner: "{{ service_identifier }}"
+    group: "{{ service_identifier }}"
+    mode: "0644"
+  notify:
+    - Restart service
+
+- name: Copy config file
+  ansible.builtin.template:
+    src: "{{ env }}/config.cfg.j2"
+    dest: "{{ execution_config_file_path }}"
+    owner: "{{ service_identifier }}"
+    group: "{{ service_identifier }}"
+    mode: "0644"
+  notify:
+    - Restart service
+
+- name: Copy NLog config file
+  ansible.builtin.copy:
+    src: "NLog.config"
+    dest: "{{ execution_nlog_file_path }}"
     owner: "{{ service_identifier }}"
     group: "{{ service_identifier }}"
     mode: "0644"

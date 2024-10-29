@@ -8,6 +8,7 @@ Group={{ service_identifier }}
 WorkingDirectory={{ execution_home_dir }}
 ExecStart={{ execution_bin_dir }}/{{ service_identifier }}   \
     --config {{ execution_config_file_path }} \
+    --loggerConfigSource {{ execution_nlog_file_path }} \
     --datadir="{{ execution_data_dir }}"   \
     --Init.ChainSpecPath {{ execution_nether_genesis_file_path }} \
     --Init.LogDirectory="{{ execution_log_dir }}" \                                

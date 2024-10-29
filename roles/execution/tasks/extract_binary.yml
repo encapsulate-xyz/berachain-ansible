@@ -1,0 +1,46 @@
+---
+- name: Create directory with specific permissions
+  ansible.builtin.file:
+    path: "{{ tmp_dir }}/{{ project }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Unarchive the binary
+  vars: 
+    suffix_url: "{{ execution_default_binary_name }}-{{ berachain[type].execution.version }}-linux-x64.zip"
+  ansible.builtin.unarchive:
+    src: "{{ berachain[type].execution.source_url }}/{{ suffix_url }}"
+    dest: "{{ tmp_dir }}/{{ project }}"
+    remote_src: true
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Copy binary file
+  ansible.builtin.copy:
+    src: "{{ tmp_dir }}/{{ project }}/{{ execution_default_binary_name }}"
+    dest: "{{ execution_bin_dir }}/{{ service_identifier }}"
+    remote_src: true
+    owner: root
+    group: root
+    force: true
+    mode: "0755"
+  notify:
+    - Restart service
+
+- name: Copy plugins
+  ansible.builtin.copy:
+    src: "{{ tmp_dir }}/{{ project }}/plugins"
+    dest: "{{ execution_bin_dir }}"
+    remote_src: true
+    owner: root
+    group: root
+    force: true
+    mode: "0755"
+
+- name: Clear /tmp directory
+  ansible.builtin.file:
+    path: "{{ tmp_dir }}/{{ project }}"
+    state: absent
