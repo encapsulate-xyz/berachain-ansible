@@ -7,12 +7,8 @@ User={{ service_identifier }}
 Group={{ service_identifier }}
 WorkingDirectory={{ execution_home_dir }}
 ExecStart={{ execution_bin_dir }}/{{ service_identifier }}   \
-    --config {{ execution_config_file_path }} \
-    --loggerConfigSource {{ execution_nlog_file_path }} \
     --datadir="{{ execution_data_dir }}"   \
     --Init.ChainSpecPath {{ execution_nether_genesis_file_path }} \
-    --Init.LogDirectory="{{ execution_log_dir }}" \                                
-    --Init.LogFileName="{{ service_identifier }}.log" \
     --JsonRpc.JwtSecretFile {{ execution_jwtsecret_path }} \
     --Network.DiscoveryPort {{ execution_network_discovery_port }}  \
     --Network.Bootnodes "enode://0401e494dbd0c84c5c0f72adac5985d2f2525e08b68d448958aae218f5ac8198a80d1498e0ebec2ce38b1b18d6750f6e61a56b4614c5a6c6cf0981c39aed47dc@34.159.32.127:30303,\
@@ -46,6 +42,8 @@ LimitNOFILE=65536
 KillSignal=SIGINT
 TimeoutStopSec=900s
 MemoryLimit=64G
+StandardOutput=append:{{ execution_log_file_path }}
+StandardError=inherit
 
 [Install]
 WantedBy=multi-user.target

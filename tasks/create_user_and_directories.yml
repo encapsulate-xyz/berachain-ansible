@@ -24,4 +24,3 @@
     owner: "{{ service_identifier }}"
     group: "{{ service_identifier }}"
     mode: "0644"
-  when: log_file_path is defined
