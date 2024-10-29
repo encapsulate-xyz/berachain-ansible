@@ -41,8 +41,8 @@
 
 - name: Copy genesis file
   ansible.builtin.copy:
-    src: "{{ env }}/eth-nether-genesis.json"
-    dest: "{{ execution_config_dir }}"
+    src: "{{ env }}/eth_nether_genesis.json"
+    dest: "{{ execution_nether_genesis_file_path }}"
     owner: "{{ service_identifier }}"
     group: "{{ service_identifier }}"
     mode: "0644"
