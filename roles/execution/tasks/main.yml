@@ -38,7 +38,7 @@
 
 - name: Copy execution client systemd service file
   ansible.builtin.template:
-    src: "{{ env }}/bera-execution.service.j2"
+    src: "{{ env }}/bera_execution.service.j2"
     dest: /etc/systemd/system/{{ service_identifier }}.service
     owner: root
     group: root
