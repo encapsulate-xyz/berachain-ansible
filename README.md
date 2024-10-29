@@ -50,11 +50,11 @@ all:
   vars:
     env: testnet
   children:
-    bera
+    berachain:
       hosts:
-        validator.bera.testnet.encapsulate.xyz:
+        validator.berachain.testnet.encapsulate.xyz:
           type: validator
-        fullnode.bera.testnet.encapsulate.xyz:
+        fullnode.berachain.testnet.encapsulate.xyz:
           type: fullnode
 ```
 
@@ -82,12 +82,12 @@ This playbook allows customization through several variables. You can define the
 - To deploy consensus client:
 
 ```bash
-ansible-playbook setup_consensus_client.yml -l validator.bera.testnet.encapsulate.xyz
+ansible-playbook setup_consensus_client.yml -l validator.berachain.testnet.encapsulate.xyz
 ```
 - To deploy execution client:
 
 ```bash
-ansible-playbook setup_execution_client.yml -l validator.bera.testnet.encapsulate.xyz
+ansible-playbook setup_execution_client.yml -l validator.berachain.testnet.encapsulate.xyz
 ```
 After you run the playbook, it will ask for confirmation, displaying all the variables and the IP address or DNS of the server you are going to deploy.
 
@@ -95,26 +95,26 @@ Example output:
 
 ```bash
 TASK [Display environment being deployed to] ***************************************************************************************************
-ok: [validator.bera.testnet.encapsulate.xyz] => {
+ok: [validator.berachain.testnet.encapsulate.xyz] => {
     "msg": [
-        "Deploying to Host: validator.bera.testnet.encapsulate.xyz",
-        "Groups: ['bera']",
-        "Project: bera",
+        "Deploying to Host: validator.berachain.testnet.encapsulate.xyz",
+        "Groups: ['berachain']",
+        "Project: berachain",
         "Environment: testnet",
         "Type: validator",
         "Version: v0.11.0",
-        "Username: bera-consensus",
-        "Service Name: bera-consensus",
+        "Username: berachain-consensus",
+        "Service Name: berachain-consensus",
         "Operating System: linux",
         "System Architecture: amd64"
     ]
 }
 
 TASK [Set all port variables dynamically] ******************************************************************************************************
-ok: [validator.bera.testnet.encapsulate.xyz]
+ok: [validator.berachain.testnet.encapsulate.xyz]
 
 TASK [Display all port variables] **************************************************************************************************************
-ok: [validator.bera.testnet.encapsulate.xyz] => {
+ok: [validator.berachain.testnet.encapsulate.xyz] => {
     "msg": [
         "P2P Port: 10156",
         "RPC Port: 10157",
@@ -131,13 +131,13 @@ ok: [validator.bera.testnet.encapsulate.xyz] => {
 TASK [Confirm deployment details] **************************************************************************************************************
 [Confirm deployment details]
 Press 'Enter' to continue with the deployment or Ctrl+C to cancel:
-ok: [validator.bera.testnet.encapsulate.xyz]
+ok: [validator.berachain.testnet.encapsulate.xyz]
 
 TASK [Please confirm again] ********************************************************************************************************************
-ok: [validator.bera.testnet.encapsulate.xyz] => {
+ok: [validator.berachain.testnet.encapsulate.xyz] => {
     "msg": [
-        "Deploying to Host: validator.bera.testnet.encapsulate.xyz",
-        "Project: bera",
+        "Deploying to Host: validator.berachain.testnet.encapsulate.xyz",
+        "Project: berachain",
         "Environment: testnet",
         "Type: validator"
     ]
@@ -146,5 +146,5 @@ ok: [validator.bera.testnet.encapsulate.xyz] => {
 TASK [Confirm deployment details] **************************************************************************************************************
 [Confirm deployment details]
 Press 'Enter' to continue with the deployment or Ctrl+C to cancel:
-ok: [validator.bera.testnet.encapsulate.xyz]
+ok: [validator.berachain.testnet.encapsulate.xyz]
 ```

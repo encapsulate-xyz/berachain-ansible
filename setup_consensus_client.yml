@@ -1,5 +1,5 @@
 ---
-- name: Set up bera node consensus client
+- name: Set up berachain node consensus client
   hosts: all
   become: true
   gather_facts: true

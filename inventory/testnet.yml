@@ -3,9 +3,9 @@ all:
   vars:
     env: testnet
   children:
-    bera:
+    berachain:
       hosts:
-        validator.bera.testnet.encapsulate.xyz:
+        validator.berachain.testnet.encapsulate.xyz:
           type: validator
-        fullnode.bera.testnet.encapsulate.xyz:
+        fullnode.berachain.testnet.encapsulate.xyz:
           type: fullnode

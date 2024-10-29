@@ -3,9 +3,9 @@ all:
   vars:
     env: mainnet
   children:
-    bera:
+    berachain:
       hosts:
-        validator.bera.mainnet.encapsulate.xyz:
+        validator.berachain.mainnet.encapsulate.xyz:
           type: validator
-        fullnode.bera.mainnet.encapsulate.xyz:
+        fullnode.berachain.mainnet.encapsulate.xyz:
           type: fullnode
