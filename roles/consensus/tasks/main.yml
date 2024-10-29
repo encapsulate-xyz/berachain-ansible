@@ -44,7 +44,7 @@
     - name: Copy genesis file
       ansible.builtin.copy:
         src: "{{ env }}/genesis.json"
-        dest: "{{ consensus_config_dir }}"
+        dest: "{{ consensus_genesis_file_path }}"
         owner: "{{ service_identifier }}"
         group: "{{ service_identifier }}"
         mode: "0644"

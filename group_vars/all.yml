@@ -16,7 +16,7 @@ berachain:
   validator:
     port_prefix: 101
     execution:
-      source_url: https://github.com/NethermindEth/nethermind/releases/download
+      source_url: https://nethdev.blob.core.windows.net/builds
       ports:
         suffix:
           engine: 51
