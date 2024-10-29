@@ -4,7 +4,7 @@ consensus_config_file_name: config.toml
 consensus_client_file_name: client.toml
 consensus_app_file_name: app.toml
 consensus_priv_validator_key_file_name: priv_validator_key.json
-consensus_consensus_key_file_name: node_key.json
+consensus_node_key_file_name: node_key.json
 consensus_genesis_file_name: genesis.json
 consensus_chain_id: 
   mainnet:
