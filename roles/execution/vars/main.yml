@@ -1,4 +1,4 @@
 ---
-execution_jwtsecret_file_name: jwt.hex
+execution_jwt_secret_file_name: jwt.hex
 execution_nether_genesis_file_name: eth-nether-genesis.json
 execution_default_binary_name: nethermind

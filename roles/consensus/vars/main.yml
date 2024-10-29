@@ -7,6 +7,6 @@ consensus_priv_validator_key_file_name: priv_validator_key.json
 consensus_consensus_key_file_name: node_key.json
 consensus_genesis_file_name: genesis.json
 consensus_chain_id: bartio-beacon-80084
-consensus_jwtsecret_file_name: jwt.hex
+consensus_jwt_secret_file_name: jwt.hex
 consensus_default_binary_name: beacond
 consensus_execution_client_jsonrpc_endpoint: http://localhost:{{ execution_engine_port }}

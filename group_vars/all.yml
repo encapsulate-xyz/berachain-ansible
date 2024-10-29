@@ -12,7 +12,7 @@ go:
   path: "{{ tmp_dir }}/go"
   module111: "on"
 
-bera:
+berachain:
   validator:
     port_prefix: 101
     execution:
