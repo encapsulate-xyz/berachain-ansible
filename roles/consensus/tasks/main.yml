@@ -86,14 +86,14 @@
       vars:
         vault_secret_source_path: "{{ project }}/{{ org }}/{{ type }}/{{ consensus_priv_validator_key_file_name }}"
         secret_destination_path: "{{ consensus_priv_validator_key_path }}"
-        secret_type: key
+        secret_type: json
 
     - name: Fetch node key and save
       ansible.builtin.include_tasks: tasks/get_and_save_vault_secret.yml
       vars:
         vault_secret_source_path: "{{ project }}/{{ org }}/{{ type }}/{{ consensus_node_key_file_name }}"
         secret_destination_path: "{{ consensus_node_key_path }}"
-        secret_type: key
+        secret_type: json
 
 - name: Save jwtsecret
   ansible.builtin.template:
