@@ -1,5 +1,12 @@
 ---
 org: encapsulate
+domain_regex: ^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$
+monitor_server_dns: monitor.encapsulate.xyz
+ansible_port: 8192
+
+architecture_map:
+  x86_64: amd64
+  aarch64: arm64
 
 default_node_types:
   - validator
@@ -14,7 +21,7 @@ go:
 
 berachain:
   validator:
-    port_prefix: 101
+    port_prefix: 203
     execution:
       source_url: https://nethdev.blob.core.windows.net/builds
       ports:
@@ -39,7 +46,7 @@ berachain:
           grpc: 90
           grpc_web: 91
   fullnode:
-    port_prefix: 101
+    port_prefix: 204
     execution:
       source_url: https://github.com/NethermindEth/nethermind/releases/download
       ports:

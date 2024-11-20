@@ -7,14 +7,7 @@
 
 - name: Set architecture variable based on system architecture
   ansible.builtin.set_fact:
-    system_architecture: >-
-      {%- if ansible_architecture == 'x86_64' -%}
-        amd64
-      {%- elif ansible_architecture == 'aarch64' -%}
-        arm64
-      {%- else -%}
-        {{ ansible_architecture }}
-      {%- endif -%}
+    system_architecture: "{{ architecture_map[ansible_architecture] | default(ansible_architecture) }}"
 
 - name: Display environment being deployed to
   ansible.builtin.debug:
@@ -78,7 +71,7 @@
 
 - name: Confirm deployment details
   ansible.builtin.pause:
-    prompt: Press 'Enter' to continue with the deployment or Ctrl+C to cancel
+    seconds: 40
 
 - name: Please confirm again
   ansible.builtin.debug:
@@ -90,4 +83,7 @@
 
 - name: Confirm deployment details
   ansible.builtin.pause:
-    prompt: Press 'Enter' to continue with the deployment or Ctrl+C to cancel
+    seconds: 20
+
+- name: Include configure ufw task
+  ansible.builtin.include_tasks: tasks/configure_ufw.yml
