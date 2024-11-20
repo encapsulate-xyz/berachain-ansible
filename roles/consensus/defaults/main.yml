@@ -16,11 +16,14 @@ consensus_directories:
   - "{{ consensus_jwtsecret_dir }}"
 
 consensus_log_file_path: "{{ consensus_log_dir }}/{{ service_identifier }}.log"
+
 consensus_priv_validator_key_path: "{{ consensus_config_dir }}/{{ consensus_priv_validator_key_file_name }}"
 consensus_node_key_path: "{{ consensus_config_dir }}/{{ consensus_node_key_file_name }}"
+consensus_priv_validator_state_file_path: "{{ consensus_data_dir }}/{{ consensus_priv_validator_state_file_name }}"
+
 consensus_config_file_path: "{{ consensus_config_dir }}/{{ consensus_config_file_name }}"
-consensus_client_file_path: "{{ consensus_config_dir }}/{{ consensus_client_file_name }}"
 consensus_app_file_path: "{{ consensus_config_dir }}/{{ consensus_app_file_name }}"
 consensus_genesis_file_path: "{{ consensus_config_dir }}/{{ consensus_genesis_file_name }}"
+
 consensus_jwt_secret_path: "{{ consensus_jwt_secret_dir }}/{{ consensus_jwt_secret_file_name }}"
 consensus_kzg_trusted_path: "{{ consensus_config_dir }}/{{ consensus_kzg_trusted_file_name }}"

@@ -16,10 +16,10 @@ version = "1.0.0-rc1"
 
 # TCP or UNIX socket address of the ABCI application,
 # or the name of an ABCI application compiled in with the CometBFT binary
-proxy_app = "tcp://127.0.0.1:{{ abci_port }}"
+proxy_app = "{{ consensus_type_settings.abci.address.default }}:{{ abci_port }}"
 
 # A custom human readable name for this node
-moniker = "encapsulate"
+moniker = "{{ org }}"
 
 # Database backend: goleveldb | cleveldb | boltdb | rocksdb | badgerdb | pebbledb
 # * goleveldb (github.com/syndtr/goleveldb)
@@ -95,7 +95,7 @@ filter_peers = false
 [rpc]
 
 # TCP or UNIX socket address for the RPC server to listen on
-laddr = "tcp://127.0.0.1:{{ rpc_port }}"
+laddr = "{{ consensus_type_settings.rpc.address[type] }}:{{ rpc_port }}"
 
 # A list of origins a cross-domain request can be executed from
 # Default value '[]' disables cors support
@@ -153,7 +153,7 @@ experimental_websocket_write_buffer_size = 200
 #
 # Enabling this experimental parameter will cause the WebSocket connection to
 # be closed instead if it cannot read fast enough, allowing for greater
-# predictability in subscription behavior.
+# predictability in subscription behaviour.
 experimental_close_on_slow_client = false
 
 # How long to wait for a tx to be committed during /broadcast_tx_commit.
@@ -189,7 +189,7 @@ tls_cert_file = ""
 tls_key_file = ""
 
 # pprof listen address (https://golang.org/pkg/net/http/pprof)
-pprof_laddr = "localhost:{{ pprof_port }}"
+pprof_laddr = "{{ consensus_type_settings.pprof.address.default }}:{{ pprof_port }}"
 
 #######################################################
 ###       gRPC Server Configuration Options         ###
@@ -257,25 +257,25 @@ enabled = false
 [p2p]
 
 # Address to listen for incoming connections
-laddr = "tcp://0.0.0.0:{{ p2p_port }}"
+laddr = "{{ consensus_type_settings.p2p.address.default}}:{{ p2p_port }}"
 
 # Address to advertise to peers for them to dial. If empty, will use the same
 # port as the laddr, and will introspect on the listener to figure out the
 # address. IP and port are required. Example: 159.89.10.97:26656
-external_address = "{{ inventory_hostname }}:{{ p2p_port }}"
+external_address = "{{ consensus_sentry_settings.external_address[type] | default(inventory_hostname + ':' + p2p_port) }}"
 
 # Comma separated list of seed nodes to connect to
-seeds = "2f8ce8462cddc9ae865ab8ec1f05cc286f07c671@34.152.0.40:26656,3037b09eaa2eed5cd1b1d3d733ab8468bf4910ee@35.203.36.128:26656,add35d414bee9c0be3b10bcf8fbc12a059eb9a3b@35.246.180.53:26656,925221ce669017eb2fd386bc134f13c03c5471d4@34.159.151.132:26656,ae50b817fcb2f35da803aa0190a5e37f4f8bcdb5@34.64.62.166:26656,773b940b33dab98963486f0e5cbfc5ca8fc688b0@34.47.91.211:26656,977edf20575a0fc1d70fca035e5e53a02be80d9a@35.240.177.67:26656,5956d13b5285896a5c703ef6a6b28bf815f7bb22@34.124.148.177:26656,c28827cb96c14c905b127b92065a3fb4cd77d7f6@testnet-seeds.whispernode.com:25456,8a0fbd4a06050519b6bce88c03932bd0a57060bd@beacond-testnet.blacknodes.net:26656,d9903c2f9902243c88f2758fe2e81e305e737fb3@bera-testnet-seeds.nodeinfra.com:26656,9c50cc419880131ea02b6e2b92027cefe17941b9@139.59.151.125:26656,cf44af098820f50a1e96d51b7af6861bc961e706@berav2-seeds.staketab.org:5001,6b5040a0e1b29a2cca224b64829d8f3d8796a3e3@berachain-testnet-v2-2.seed.l0vd.com:21656,4f93da5553f0dfaafb620532901e082255ec3ad3@berachain-testnet-v2-1.seed.l0vd.com:61656,a62eefaa284eaede7460315d2f1d1f92988e01f1@135.125.188.10:26656"
+seeds = "{{ consensus_sentry_settings.seeds[type] | default(seeds) }}"
 
 # Comma separated list of nodes to keep persistent connections to
-persistent_peers = ""
+persistent_peers = "{{ consensus_sentry_settings.persistent_peers[type] | default(peers) }}"
 
 # Path to address book
 addr_book_file = "config/addrbook.json"
 
 # Set true for strict address routability rules
 # Set false for private or local networks
-addr_book_strict = true
+addr_book_strict = {{ (consensus_sentry_settings.addr_book_strict[type] | default(true)) | tojson }}
 
 # Maximum number of inbound peers
 max_num_inbound_peers = 40
@@ -284,7 +284,7 @@ max_num_inbound_peers = 40
 max_num_outbound_peers = 10
 
 # List of node IDs, to which a connection will be (re)established ignoring any existing limits
-unconditional_peer_ids = ""
+unconditional_peer_ids = "{{ consensus_sentry_settings.unconditional_peer_ids[type] | default() }}"
 
 # Maximum pause when redialing a persistent peer (if zero, exponential backoff is used)
 persistent_peers_max_dial_period = "0s"
@@ -302,7 +302,7 @@ send_rate = 5120000
 recv_rate = 5120000
 
 # Set true to enable the peer-exchange reactor
-pex = true
+pex = {{ (consensus_sentry_settings.pex[type] | default(true)) | tojson }}
 
 # Seed mode, in which node constantly crawls the network and looks for
 # peers. If another node asks it for addresses, it responds and disconnects.
@@ -311,7 +311,7 @@ pex = true
 seed_mode = false
 
 # Comma separated list of peer IDs to keep private (will not be gossiped to other peers)
-private_peer_ids = ""
+private_peer_ids = "{{ consensus_sentry_settings.private_peer_ids[type] | default() }}"
 
 # Toggle to disable guard against peers connecting from the same ip.
 allow_duplicate_ip = false
@@ -343,8 +343,8 @@ type = "flood"
 recheck = true
 
 # recheck_timeout is the time the application has during the rechecking process
-# to return CheckTx responses, once all requests have been sent. Responses that
-# arrive after the timeout expires are discarded. It only applies to
+# to return CheckTx responses, once all requests have been sent. Responses that 
+# arrive after the timeout expires are discarded. It only applies to 
 # non-local ABCI clients and when recheck is enabled.
 recheck_timeout = "1s"
 
@@ -477,7 +477,7 @@ skip_timeout_commit = false
 # When non-zero, the node will panic upon restart
 # if the same consensus key was used to sign {double_sign_check_height} last blocks.
 # So, validators should stop the state machine, wait for some blocks, and then restart the state machine to avoid panic.
-double_sign_check_height = 0
+double_sign_check_height = {{ consensus_type_settings.double_sign_check_height[type] }}
 
 # EmptyBlocks mode and possible interval between empty blocks
 create_empty_blocks = true
@@ -569,7 +569,7 @@ initial_block_results_retain_height = 0
 #               - When "kv" is chosen "tx.height" and "tx.hash" will always be indexed.
 #   3) "psql" - the indexer services backed by PostgreSQL.
 # When "kv" or "psql" is chosen "tx.height" and "tx.hash" will always be indexed.
-indexer = "kv"
+indexer = "{{ consensus_space_optimization_settings.indexer }}"
 
 # The PostgreSQL connection configuration, the connection format:
 #   postgresql://<user>:<password>@<host>:<port>/<db>?<opts>
@@ -583,10 +583,10 @@ psql-conn = ""
 # When true, Prometheus metrics are served under /metrics on
 # PrometheusListenAddr.
 # Check out the documentation for the list of available metrics.
-prometheus = true
+prometheus = {{ consensus_type_settings.prometheus.enable | tojson }}
 
 # Address to listen for Prometheus collector(s) connections
-prometheus_listen_addr = ":{{ prometheus_port }}"
+prometheus_listen_addr = "{{ consensus_type_settings.prometheus.address.default }}:{{ prometheus_port }}"
 
 # Maximum number of simultaneous connections.
 # If you want to accept a larger number than the default, make sure

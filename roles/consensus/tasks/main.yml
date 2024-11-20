@@ -1,4 +1,20 @@
 ---
+- name: Include the specific network's vars file
+  ansible.builtin.include_vars:
+    file: vars/ufw_rules.yml
+
+- name: Apply UFW rules
+  ansible.builtin.include_tasks: tasks/apply_ufw_rules.yml
+  loop: "{{ consensus_ufw_rules[type] }}"
+
+- name: Set seeds
+  ansible.builtin.set_fact:
+    seeds: "{{ lookup('file', 'files/{{ env }}/seeds.txt').splitlines() | join(',') }}"
+
+- name: Set peers
+  ansible.builtin.set_fact:
+    peers: "{{ lookup('file', 'files/{{ env }}/peers.txt').splitlines() | join(',') }}"
+
 - name: Include user creation task
   ansible.builtin.include_tasks: tasks/create_user_and_directories.yml
   vars:
@@ -31,13 +47,14 @@
       notify:
         - Restart service
 
-    - name: Copy client file
-      ansible.builtin.template:
-        src: "{{ env }}/client.toml.j2"
-        dest: "{{ consensus_client_file_path }}"
+    - name: Creates validator state file
+      ansible.builtin.copy:
+        src: priv_validator_state.json
+        dest: "{{ consensus_priv_validator_state_file_path }}"
         owner: "{{ service_identifier }}"
         group: "{{ service_identifier }}"
-        mode: "0644"
+        mode: "0600"
+        force: false
       notify:
         - Restart service
 
