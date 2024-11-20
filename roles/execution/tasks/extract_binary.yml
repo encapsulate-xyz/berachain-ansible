@@ -1,7 +1,7 @@
 ---
 - name: Unarchive the binary
-  vars: 
-    suffix_url: "{{ execution_default_binary_name }}-{{ berachain[type].execution.version }}-linux-x64.zip"
+  vars:
+    suffix_url: "{{ execution_default_binary_name }}-{{ berachain[type].execution.version }}-{{ ansible_system | lower }}-x64.zip"
   ansible.builtin.unarchive:
     src: "{{ berachain[type].execution.source_url }}/{{ suffix_url }}"
     dest: "{{ execution_bin_dir }}"
