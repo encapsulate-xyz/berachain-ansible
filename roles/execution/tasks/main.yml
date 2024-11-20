@@ -1,4 +1,12 @@
 ---
+- name: Include the ufw rules vars file
+  ansible.builtin.include_vars:
+    file: vars/ufw_rules.yml
+
+- name: Apply UFW rules
+  ansible.builtin.include_tasks: tasks/apply_ufw_rules.yml
+  loop: "{{ execution_ufw_rules[type] }}"
+
 - name: Include user creation task
   ansible.builtin.include_tasks: tasks/create_user_and_directories.yml
   vars:
