@@ -44,6 +44,16 @@
   notify:
     - Restart service
 
+- name: Copy NLog config file
+  ansible.builtin.copy:
+    src: NLog.config
+    dest: "{{ execution_nlog_file_path }}"
+    owner: "{{ service_identifier }}"
+    group: "{{ service_identifier }}"
+    mode: "0644"
+  notify:
+    - Restart service
+
 - name: Copy execution client systemd service file
   ansible.builtin.template:
     src: "{{ env }}/bera_execution.service.j2"

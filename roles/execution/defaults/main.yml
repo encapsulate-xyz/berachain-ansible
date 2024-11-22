@@ -4,7 +4,8 @@ execution_home_dir: /opt/{{ service_identifier }}
 execution_bin_dir: "{{ execution_home_dir }}/bin"
 execution_config_dir: "{{ execution_home_dir }}/config"
 execution_data_dir: "{{ execution_home_dir }}/data"
-execution_jwtsecret_dir: "{{ execution_home_dir }}/jwtsecret"
+execution_jwt_secret_dir: "{{ execution_home_dir }}/jwtsecret"
+execution_plugins_dir: "{{ execution_home_dir }}/plugins"
 execution_log_dir: "{{ execution_home_dir }}/log"
 
 execution_directories:
@@ -12,11 +13,14 @@ execution_directories:
   - "{{ execution_bin_dir }}"
   - "{{ execution_config_dir }}"
   - "{{ execution_data_dir }}"
-  - "{{ execution_jwtsecret_dir }}"
+  - "{{ execution_jwt_secret_dir }}"
+  - "{{ execution_plugins_dir }}"
   - "{{ execution_log_dir }}"
 
 execution_log_file_path: "{{ execution_log_dir }}/{{ service_identifier }}.log"
 
 execution_jwt_secret_path: "{{ execution_jwt_secret_dir }}/{{ execution_jwt_secret_file_name }}"
+
 execution_config_file_path: "{{ execution_config_dir }}/{{ execution_config_file_name }}"
+execution_nlog_file_path: "{{ execution_config_dir }}/{{ execution_nlog_file_name }}"
 execution_nether_genesis_file_path: "{{ execution_config_dir }}/{{ execution_nether_genesis_file_name }}"
