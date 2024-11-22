@@ -25,24 +25,25 @@
 
 - name: Set all port variables dynamically for consensus client
   ansible.builtin.set_fact:
-    p2p_port: "{{ vars[project][type][client].port_prefix ~ vars[project][type][client].ports.suffix.p2p }}"
-    rpc_port: "{{ vars[project][type][client].port_prefix ~ vars[project][type][client].ports.suffix.rpc }}"
-    abci_port: "{{ vars[project][type][client].port_prefix ~ vars[project][type][client].ports.suffix.abci }}"
-    prometheus_port: "{{ vars[project][type][client].port_prefix ~ vars[project][type][client].ports.suffix.prometheus }}"
-    pprof_port: "{{ vars[project][type][client].port_prefix ~ vars[project][type][client].ports.suffix.pprof }}"
-    rest_api_port: "{{ vars[project][type][client].port_prefix ~ vars[project][type][client].ports.suffix.rest_api }}"
-    rosetta_port: "{{ vars[project][type][client].port_prefix ~ vars[project][type][client].ports.suffix.rosetta }}"
-    grpc_port: "{{ vars[project][type][client].port_prefix ~ vars[project][type][client].ports.suffix.grpc }}"
-    grpc_web_port: "{{ vars[project][type][client].port_prefix ~ vars[project][type][client].ports.suffix.grpc_web }}"
+    p2p_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.p2p }}"
+    rpc_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.rpc }}"
+    abci_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.abci }}"
+    prometheus_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.prometheus }}"
+    pprof_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.pprof }}"
+    rest_api_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.rest_api }}"
+    rosetta_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.rosetta }}"
+    grpc_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.grpc }}"
+    grpc_web_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.grpc_web }}"
+    execution_engine_port: "{{ vars[project][type].port_prefix ~ vars[project][type].execution.ports.suffix.engine }}"
   when: client == "consensus"
 
 - name: Set all port variables dynamically for execution client
   ansible.builtin.set_fact:
-    execution_engine_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.auth_rpc }}"
+    execution_engine_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.engine }}"
     execution_p2p_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.p2p }}"
     execution_network_discovery_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.network_discovery }}"
     execution_metrics_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.metrics }}"
-    execution_json_rpc_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.http }}"
+    execution_json_rpc_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.json_rpc }}"
   when: client == "execution"
 
 - name: Display all consensus client port variables
