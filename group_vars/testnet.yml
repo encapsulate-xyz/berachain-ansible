@@ -11,7 +11,7 @@ berachain:
         version: 1.22.8
   fullnode:
     execution:
-      version: v1.29.1-dfea5240
+      version: 1.29.1-dfea5240
       go:
         version: 1.22.8
     consensus:
