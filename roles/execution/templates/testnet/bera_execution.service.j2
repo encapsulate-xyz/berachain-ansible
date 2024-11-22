@@ -12,7 +12,7 @@ ExecStart={{ execution_bin_dir }}/{{ service_identifier }} \
     --loggerConfigSource {{ execution_nlog_file_path }}
 Restart=always
 RestartSec=4
-LimitNOFILE=65536
+LimitNOFILE=1000000
 KillSignal=SIGINT
 TimeoutStopSec=900s
 MemoryMax=64G
