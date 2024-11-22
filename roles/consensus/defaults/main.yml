@@ -5,7 +5,7 @@ consensus_bin_dir: "{{ consensus_home_dir }}/bin"
 consensus_log_dir: "{{ consensus_home_dir }}/log"
 consensus_data_dir: "{{ consensus_home_dir }}/data"
 consensus_config_dir: "{{ consensus_home_dir }}/config"
-consensus_jwtsecret_dir: "{{ consensus_home_dir }}/jwtsecret"
+consensus_jwt_secret_dir: "{{ consensus_home_dir }}/jwtsecret"
 
 consensus_directories:
   - "{{ consensus_home_dir }}"
@@ -13,7 +13,7 @@ consensus_directories:
   - "{{ consensus_log_dir }}"
   - "{{ consensus_data_dir }}"
   - "{{ consensus_config_dir }}"
-  - "{{ consensus_jwtsecret_dir }}"
+  - "{{ consensus_jwt_secret_dir }}"
 
 consensus_log_file_path: "{{ consensus_log_dir }}/{{ service_identifier }}.log"
 
