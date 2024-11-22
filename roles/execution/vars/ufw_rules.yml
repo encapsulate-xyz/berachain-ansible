@@ -6,7 +6,7 @@ execution_ufw_rules:
       rule: allow
       from: any
       comment: execution_p2p_port
-    
+
     - port: "{{ execution_network_discovery_port }}"
       proto: tcp
       rule: allow
@@ -25,7 +25,7 @@ execution_ufw_rules:
       rule: allow
       from: any
       comment: execution_p2p_port
-    
+
     - port: "{{ execution_network_discovery_port }}"
       proto: tcp
       rule: allow
