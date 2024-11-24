@@ -9,7 +9,7 @@
   },
   "JsonRpc": {
     "JwtSecretFile": "{{ execution_jwt_secret_path }}",
-    "Host": "::",
+    "Host": "{{ execution_type_settings.json_rpc.address[type] }}",
     "Port": "{{ execution_json_rpc_port }}",
     "EnginePort": "{{ execution_engine_port }}"
   },
