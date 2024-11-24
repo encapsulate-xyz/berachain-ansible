@@ -1,0 +1,11 @@
+---
+dependencies:
+  - role: fubarhouse.golang
+    vars:
+      go_version: "{{ vars[project][type][client].go.version }}" # Set the desired Go version
+      GOPATH: "{{ go.path }}" # Go path
+      GOROOT: "{{ go.root }}" # Go root
+      GO111MODULE: "{{ go.module111 }}" # Go module management
+      GOOS: "{{ ansible_system | lower }}" # Target OS (linux)
+      GOARCH: "{{ system_architecture }}" # Target architecture (amd64)
+      go_custom_mirror: https://storage.googleapis.com/golang

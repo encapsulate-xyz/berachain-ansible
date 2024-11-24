@@ -1,0 +1,11 @@
+---
+all:
+  vars:
+    env: testnet
+  children:
+    berachain:
+      hosts:
+        validator.berachain.testnet.encapsulate.xyz:
+          type: validator
+        fullnode.berachain.testnet.encapsulate.xyz:
+          type: fullnode

@@ -1,0 +1,14 @@
+---
+execution_jwt_secret_file_name: jwt.hex
+
+execution_nether_genesis_file_name: eth-nether-genesis.json
+execution_config_file_name: config.cfg
+execution_nlog_file_name: NLog.config
+
+execution_default_binary_name: nethermind
+
+execution_type_settings:
+  json_rpc:
+    address:
+      validator: 127.0.0.1
+      fullnode: 0.0.0.0

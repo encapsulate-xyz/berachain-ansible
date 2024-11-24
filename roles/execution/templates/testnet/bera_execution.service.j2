@@ -1,0 +1,21 @@
+[Unit]
+Description= {{ service_identifier }} layer client
+
+[Service]
+Type=simple
+User={{ service_identifier }}
+Group={{ service_identifier }}
+WorkingDirectory={{ execution_home_dir }}
+ExecStart={{ execution_bin_dir }}/{{ service_identifier }} \
+    --pluginsDirectory {{ execution_plugins_dir }} \
+    --config {{ execution_config_file_path }} \
+    --loggerConfigSource {{ execution_nlog_file_path }}
+Restart=always
+RestartSec=4
+LimitNOFILE=1000000
+KillSignal=SIGINT
+TimeoutStopSec=900s
+MemoryMax=64G
+
+[Install]
+WantedBy=multi-user.target

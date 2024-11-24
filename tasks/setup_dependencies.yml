@@ -1,0 +1,32 @@
+---
+- name: Install apt packages
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+  loop:
+    - make
+    - build-essential
+    - ccze
+    - unzip
+    - libsnappy-dev
+    - libc6-dev
+    - libc6
+    - gcc
+    - jq
+    - git
+    - jq
+    - chrony
+    - lz4
+    - yq
+    - unzip
+
+- name: Remove existing Go directories (if any)
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  become: true
+  loop:
+    - "{{ go.root }}"
+    - "{{ go.path }}"

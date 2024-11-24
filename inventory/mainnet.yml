@@ -1,0 +1,11 @@
+---
+all:
+  vars:
+    env: mainnet
+  children:
+    berachain:
+      hosts:
+        validator.berachain.mainnet.encapsulate.xyz:
+          type: validator
+        fullnode.berachain.mainnet.encapsulate.xyz:
+          type: fullnode

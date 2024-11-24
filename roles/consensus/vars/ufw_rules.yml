@@ -1,0 +1,45 @@
+---
+consensus_ufw_rules:
+  validator:
+    - port: "{{ p2p_port }}"
+      proto: tcp
+      rule: allow
+      from: any
+      comment: p2p_port
+
+    - port: "{{ prometheus_port }}"
+      proto: tcp
+      rule: allow
+      from: "{{ monitor_server_dns }}"
+      comment: prometheus_port
+
+  fullnode:
+    - port: "{{ p2p_port }}"
+      proto: tcp
+      rule: allow
+      from: any
+      comment: p2p_port
+
+    - port: "{{ prometheus_port }}"
+      proto: tcp
+      rule: allow
+      from: "{{ monitor_server_dns }}"
+      comment: prometheus_port
+
+    - port: "{{ rpc_port }}"
+      proto: tcp
+      rule: limit
+      from: any
+      comment: rpc_port
+
+    - port: "{{ rest_api_port }}"
+      proto: tcp
+      rule: limit
+      from: any
+      comment: rest_api_port
+
+    - port: "{{ grpc_port }}"
+      proto: tcp
+      rule: limit
+      from: any
+      comment: grpc_port

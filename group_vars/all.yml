@@ -1,0 +1,74 @@
+---
+org: encapsulate
+domain_regex: ^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$
+monitor_server_dns: monitor.encapsulate.xyz
+ansible_port: 8192
+
+architecture_map:
+  x86_64: amd64
+  aarch64: arm64
+
+default_node_types:
+  - validator
+  - default
+
+tmp_dir: /tmp
+
+go:
+  root: /usr/local/go
+  path: "{{ tmp_dir }}/go"
+  module111: "on"
+
+berachain:
+  validator:
+    port_prefix: 203
+    execution:
+      source_url: https://nethdev.blob.core.windows.net/builds
+      ports:
+        suffix:
+          engine: 51
+          network_discovery: 30
+          p2p: 30
+          json_rpc: 45
+          metrics: 62
+    consensus:
+      source_url: https://github.com/berachain/beacon-kit
+      ports:
+        suffix:
+          # Used for both p2p_laddr and p2p_external_address
+          p2p: 56
+          rpc: 57
+          abci: 58
+          prometheus: 60
+          pprof: 61
+          rest_api: 17
+          rosetta: 80
+          grpc: 90
+          grpc_web: 91
+          node_api: 35
+  fullnode:
+    port_prefix: 204
+    execution:
+      source_url: https://nethdev.blob.core.windows.net/builds
+      ports:
+        suffix:
+          engine: 51
+          network_discovery: 30
+          p2p: 30
+          json_rpc: 45
+          metrics: 62
+    consensus:
+      source_url: https://github.com/berachain/beacon-kit
+      ports:
+        suffix:
+          # Used for both p2p_laddr and p2p_external_address
+          p2p: 56
+          rpc: 57
+          abci: 58
+          prometheus: 60
+          pprof: 61
+          rest_api: 17
+          rosetta: 80
+          grpc: 90
+          grpc_web: 91
+          node_api: 35

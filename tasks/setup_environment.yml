@@ -1,0 +1,92 @@
+---
+- name: Set project and service identifier in facts
+  ansible.builtin.set_fact:
+    project: "{{ group_names[0] }}"
+    service_identifier: >-
+      {{ group_names[0] }}{{ '-' + client if type in default_node_types and client is defined else '-' + type + ('-' + client if client is defined else '') }}
+
+- name: Set architecture variable based on system architecture
+  ansible.builtin.set_fact:
+    system_architecture: "{{ architecture_map[ansible_architecture] | default(ansible_architecture) }}"
+
+- name: Display environment being deployed to
+  ansible.builtin.debug:
+    msg:
+      - "Deploying to Host: {{ inventory_hostname }}"
+      - "Groups: {{ group_names }}"
+      - "Project: {{ project }}"
+      - "Environment: {{ env }}"
+      - "Type: {{ type }}"
+      - "Version: {{ vars[project][type][client].version }}"
+      - "Username: {{ service_identifier }}"
+      - "Service Name: {{ service_identifier }}"
+      - "Operating System: {{ ansible_system | lower }}"
+      - "System Architecture: {{ system_architecture }}"
+
+- name: Set all port variables dynamically for consensus client
+  ansible.builtin.set_fact:
+    p2p_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.p2p }}"
+    rpc_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.rpc }}"
+    abci_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.abci }}"
+    prometheus_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.prometheus }}"
+    pprof_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.pprof }}"
+    rest_api_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.rest_api }}"
+    rosetta_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.rosetta }}"
+    grpc_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.grpc }}"
+    grpc_web_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.grpc_web }}"
+    node_api_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.node_api }}"
+    execution_engine_port: "{{ vars[project][type].port_prefix ~ vars[project][type].execution.ports.suffix.engine }}"
+  when: client == "consensus"
+
+- name: Set all port variables dynamically for execution client
+  ansible.builtin.set_fact:
+    execution_engine_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.engine }}"
+    execution_p2p_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.p2p }}"
+    execution_network_discovery_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.network_discovery }}"
+    execution_metrics_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.metrics }}"
+    execution_json_rpc_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.json_rpc }}"
+  when: client == "execution"
+
+- name: Display all consensus client port variables
+  ansible.builtin.debug:
+    msg:
+      - "P2P Port: {{ p2p_port }}"
+      - "RPC Port: {{ rpc_port }}"
+      - "ABCI Port: {{ abci_port }}"
+      - "Prometheus Port: {{ prometheus_port }}"
+      - "Pprof Port: {{ pprof_port }}"
+      - "REST API Port: {{ rest_api_port }}"
+      - "Rosetta Port: {{ rosetta_port }}"
+      - "gRPC Port: {{ grpc_port }}"
+      - "gRPC-Web Port: {{ grpc_web_port }}"
+      - "Node API Port: {{ node_api_port }}"
+  when: client == "consensus"
+
+- name: Display all execution client port variables
+  ansible.builtin.debug:
+    msg:
+      - "P2P Port: {{ execution_p2p_port }}"
+      - "Engine Port: {{ execution_engine_port }}"
+      - "Network Discovery Port: {{ execution_network_discovery_port }}"
+      - "Metrics Port: {{ execution_metrics_port }}"
+      - "JSON RPC Port: {{ execution_json_rpc_port }}"
+  when: client == "execution"
+
+- name: Confirm deployment details
+  ansible.builtin.pause:
+    seconds: 40
+
+- name: Please confirm again
+  ansible.builtin.debug:
+    msg:
+      - "Deploying to Host: {{ inventory_hostname }}"
+      - "Project: {{ project }}"
+      - "Environment: {{ env }}"
+      - "Type: {{ type }}"
+
+- name: Confirm deployment details
+  ansible.builtin.pause:
+    seconds: 20
+
+- name: Include configure ufw task
+  ansible.builtin.include_tasks: tasks/configure_ufw.yml

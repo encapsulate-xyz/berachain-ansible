@@ -1,0 +1,127 @@
+---
+# config file names
+consensus_config_file_name: config.toml
+consensus_app_file_name: app.toml
+consensus_genesis_file_name: genesis.json
+
+consensus_priv_validator_key_file_name: priv_validator_key.json
+consensus_node_key_file_name: node_key.json
+consensus_priv_validator_state_file_name: priv_validator_state.json
+
+consensus_jwt_secret_file_name: jwt.hex
+consensus_kzg_trusted_file_name: kzg-trusted-setup.json
+
+consensus_default_binary_name: beacond
+
+consensus_execution_client_jsonrpc_endpoint: http://localhost:{{ execution_engine_port }}
+
+consensus_space_optimization_settings:
+  indexer: "null"
+  pruning: everything
+
+consensus_type_settings:
+  # config.toml
+  abci:
+    address:
+      default: tcp://127.0.0.1
+  rpc:
+    address:
+      validator: tcp://127.0.0.1
+      fullnode: tcp://0.0.0.0
+  pprof:
+    address:
+      default: localhost
+  p2p:
+    address:
+      default: tcp://0.0.0.0
+  double_sign_check_height:
+    validator: 10
+    fullnode: 0
+  prometheus:
+    enable: true
+    address:
+      default: 0.0.0.0
+  # app.toml
+  node_api:
+    address:
+      validator: tcp://127.0.0.1
+      fullnode: tcp://0.0.0.0
+
+########################################################################################################################
+# SENTRY CONFIGURATION: change only if you wanna run validator in a sentry architecture
+########################################################################################################################
+# pex:
+#   validator:
+#     value: false
+#     explanation: Disables peer exchange to keep the validator private and prevent gossiping with the network.
+#                  Validator only communicates with its sentry nodes.
+#   fullnode:
+#     value: true
+#     explanation: Enables peer exchange so the sentry node can connect with public peers and discover other nodes.
+
+# persistent_peers:
+#   validator:
+#     value: List of sentry nodes
+#     explanation: Ensures stable connections between the validator and its sentry nodes. No other peer should be added other than your own sentry nodes
+#   fullnode:
+#     value: Validator node and other sentry nodes
+#     explanation: Sentry nodes maintain connections with the validator and optionally other sentries for redundancy.
+
+# private_peer_ids:
+#   validator:
+#     value: None ("")
+#     explanation: Validators do not need to hide who they are communicating with, as they only connect with trusted sentries.
+#   fullnode:
+#     value: Validator node ID
+#     explanation: Marks the validator as a private peer to ensure the validator's IP is not gossiped to the network.
+
+# unconditional_peer_ids:
+#   validator:
+#     value: Optionally sentry node IDs
+#     explanation: Ensures that critical sentry nodes are always connected, even with inbound/outbound limits.
+#   fullnode:
+#     value: Validator node ID and optionally other sentries
+#     explanation: Guarantees continuous connection with the validator, maintaining stability even under restrictions.
+
+# addr_book_strict:
+#   validator:
+#     value: false
+#     explanation: Allows connections from non-routable IPs for private or local communication.
+#   fullnode:
+#     value: false
+#     explanation: Enables connections from non-routable IPs, useful in private network setups.
+
+# seeds:
+#   validator:
+#     value: None ("")
+#     explanation: Validators do not need to connect to seed nodes since they only communicate with sentry nodes.
+#   fullnode:
+#     value: "can connect to other seeds"
+#     explanation: Fullnodes (sentry nodes) can connect to seed nodes to discover peers and maintain connectivity with the network.
+
+########################################################################################################################
+# Uncomment below settings to toggle node sentry settings
+########################################################################################################################
+
+# consensus_sentry_settings:
+#   pex:
+#     validator: # false
+#     fullnode: # true
+#   persistent_peers:
+#     validator: # list of sentry nodes
+#     fullnode: # validator node, optionally other sentry nodes
+#   private_peer_ids:
+#     validator: # ""
+#     fullnode: # validator node ID
+#   unconditional_peer_ids:
+#     validator: # sentry node IDs (optional)
+#     fullnode: # validator node ID and sentry node IDs (optional)
+#   addr_book_strict:
+#     validator: # false
+#     fullnode: # false
+#   seeds:
+#     validator: # ""
+#     fullnode: # can connect to other seeds
+#   external_address:
+#     validator: # ""
+#     fullnode: # can use the default if its a fullnode

@@ -1,0 +1,26 @@
+---
+- name: Install ufw
+  ansible.builtin.apt:
+    name: ufw
+    state: present
+
+- name: UFW - Enable with logging
+  community.general.ufw:
+    state: enabled
+    logging: medium
+
+- name: Set default incoming policy to deny
+  community.general.ufw:
+    default: deny
+    direction: incoming
+
+- name: Set default outgoing policy to allow
+  community.general.ufw:
+    default: allow
+    direction: outgoing
+
+- name: UFW - Allow SSH connections
+  community.general.ufw:
+    rule: limit
+    name: OpenSSH
+    comment: limit SSH from any ip on tcp protocol

@@ -1,0 +1,23 @@
+---
+- name: Resolve domain to IP if needed
+  ansible.builtin.getent:
+    database: hosts
+    key: "{{ item.from }}"
+  register: resolved_ip
+  when: item.from is search(domain_regex)
+
+- name: Extract IP from getent output
+  ansible.builtin.debug:
+    msg: "{{ resolved_ip.ansible_facts.getent_hosts.keys() | first }}"
+  register: from_server_ip
+  when: item.from is search(domain_regex)
+
+- name: Apply UFW rule
+  community.general.ufw:
+    rule: "{{ item.rule }}"
+    port: "{{ item.port }}"
+    proto: "{{ item.proto }}"
+    direction: "{{ item.direction | default('in') }}"
+    from: "{{ from_server_ip.msg | default(item.from) }}"
+    to: "{{ item.to | default('any') }}"
+    comment: "{{ item.rule }} {{ env }} {{ project }} {{ type }} {{ item.comment }} from {{ item.from }} ip on {{ item.proto }} protocol"

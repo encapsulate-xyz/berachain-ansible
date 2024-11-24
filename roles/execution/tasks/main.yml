@@ -1,0 +1,56 @@
+---
+- name: Include the ufw rules vars file
+  ansible.builtin.include_vars:
+    file: vars/ufw_rules.yml
+
+- name: Apply UFW rules
+  ansible.builtin.include_tasks: tasks/apply_ufw_rules.yml
+  loop: "{{ execution_ufw_rules[type] }}"
+
+- name: Include user creation task
+  ansible.builtin.include_tasks: tasks/create_user_and_directories.yml
+  vars:
+    home: "{{ execution_home_dir }}"
+    directories: "{{ execution_directories }}"
+
+- name: Include extract binary task
+  ansible.builtin.include_tasks: extract_binary.yml
+
+- name: Save jwtsecret
+  ansible.builtin.template:
+    src: jwtsecret.j2
+    dest: "{{ execution_jwt_secret_path }}"
+    owner: "{{ service_identifier }}"
+    group: "{{ service_identifier }}"
+    mode: "0644"
+
+- name: Copy genesis file
+  ansible.builtin.copy:
+    src: "{{ env }}/eth_nether_genesis.json"
+    dest: "{{ execution_nether_genesis_file_path }}"
+    owner: "{{ service_identifier }}"
+    group: "{{ service_identifier }}"
+    mode: "0644"
+  notify:
+    - Restart service
+
+- name: Copy config file
+  ansible.builtin.template:
+    src: "{{ env }}/config.cfg.j2"
+    dest: "{{ execution_config_file_path }}"
+    owner: "{{ service_identifier }}"
+    group: "{{ service_identifier }}"
+    mode: "0644"
+  notify:
+    - Restart service
+
+- name: Copy execution client systemd service file
+  ansible.builtin.template:
+    src: "{{ env }}/bera_execution.service.j2"
+    dest: /etc/systemd/system/{{ service_identifier }}.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - Reload service
+    - Restart service
