@@ -40,6 +40,16 @@
     force: true
     mode: "0755"
 
+- name: Copy Nlog.config
+  ansible.builtin.copy:
+    src: "{{ tmp_dir }}/{{ project }}/Nlog.config"
+    dest: "{{ execution_nlog_file_path }}"
+    remote_src: true
+    owner: "{{ service_identifier }}"
+    group: "{{ service_identifier }}"
+    force: true
+    mode: "0644"
+
 - name: Clear tmp directory
   ansible.builtin.file:
     path: "{{ tmp_dir }}/{{ project }}"
