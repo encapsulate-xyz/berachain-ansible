@@ -34,6 +34,7 @@
     rosetta_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.rosetta }}"
     grpc_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.grpc }}"
     grpc_web_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.grpc_web }}"
+    node_api_port: "{{ vars[project][type].port_prefix ~ vars[project][type][client].ports.suffix.node_api }}"
     execution_engine_port: "{{ vars[project][type].port_prefix ~ vars[project][type].execution.ports.suffix.engine }}"
   when: client == "consensus"
 
@@ -58,6 +59,7 @@
       - "Rosetta Port: {{ rosetta_port }}"
       - "gRPC Port: {{ grpc_port }}"
       - "gRPC-Web Port: {{ grpc_web_port }}"
+      - "Node API Port: {{ node_api_port }}"
   when: client == "consensus"
 
 - name: Display all execution client port variables

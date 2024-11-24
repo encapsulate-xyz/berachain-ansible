@@ -45,6 +45,7 @@ berachain:
           rosetta: 80
           grpc: 90
           grpc_web: 91
+          node_api: 35
   fullnode:
     port_prefix: 204
     execution:
@@ -70,3 +71,4 @@ berachain:
           rosetta: 80
           grpc: 90
           grpc_web: 91
+          node_api: 35

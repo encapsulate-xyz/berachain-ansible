@@ -41,6 +41,11 @@ consensus_type_settings:
     enable: true
     address:
       default: 0.0.0.0
+  # app.toml
+  node_api:
+    address:
+      validator: tcp://127.0.0.1
+      fullnode: tcp://0.0.0.0
 
 ########################################################################################################################
 # SENTRY CONFIGURATION: change only if you wanna run validator in a sentry architecture
