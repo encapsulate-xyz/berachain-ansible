@@ -1,0 +1,6 @@
+---
+snapshot_sync_home_dir: /opt/{{ service_identifier }}
+
+snapshot_sync_data_dir: "{{ snapshot_sync_home_dir }}/data"
+
+snapshot_sync_priv_validator_state_file_path: "{{ snapshot_sync_data_dir }}/{{ snapshot_sync_priv_validator_state_file_name }}"

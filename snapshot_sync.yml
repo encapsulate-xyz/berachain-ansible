@@ -1,0 +1,30 @@
+---
+- name: Snapshot sync berachain node
+  hosts: all
+  become: true
+  gather_facts: true
+  vars:
+    allowed_node_types: [validator, fullnode]
+  vars_files:
+    - group_vars/all.yml
+    - group_vars/vault.yml
+    - group_vars/{{ env }}.yml
+
+  tasks:
+    - name: Ensure node type is allowed and run snapshot sync roles
+      when: type in allowed_node_types
+      block:
+        - name: Setup environment and snapshot sync for consensus client
+          block:
+            - name: Setup environment for consensus client
+              ansible.builtin.include_tasks: tasks/setup_environment.yml
+              vars:
+                client: consensus
+
+            - name: Include common handlers for consensus client
+              ansible.builtin.include_role:
+                name: common
+
+            - name: Run snapshot sync role for consensus client
+              ansible.builtin.include_role:
+                name: snapshot_sync
