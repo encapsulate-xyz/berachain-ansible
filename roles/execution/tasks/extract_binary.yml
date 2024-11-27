@@ -42,7 +42,7 @@
 
 - name: Copy Nlog.config
   ansible.builtin.copy:
-    src: "{{ tmp_dir }}/{{ project }}/Nlog.config"
+    src: "{{ tmp_dir }}/{{ project }}/NLog.config"
     dest: "{{ execution_nlog_file_path }}"
     remote_src: true
     owner: "{{ service_identifier }}"

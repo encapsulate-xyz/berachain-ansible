@@ -1,0 +1,67 @@
+---
+- name: Stop service
+  ansible.builtin.systemd:
+    name: "{{ service_identifier }}"
+    state: stopped
+
+- name: Handle backup validator state file backup
+  block:
+    - name: Backup validator state file
+      ansible.builtin.copy:
+        src: "{{ snapshot_sync_priv_validator_state_file_path }}"
+        dest: "{{ snapshot_sync_home_dir }}"
+        remote_src: true
+        owner: "{{ service_identifier }}"
+        group: "{{ service_identifier }}"
+        mode: "0644"
+  rescue:
+    - name: Handle missing file
+      ansible.builtin.debug:
+        msg: Source file does not exist
+
+- name: Delete data folder
+  ansible.builtin.file:
+    path: "{{ snapshot_sync_data_dir }}"
+    state: absent
+
+- name: Download and Extract snapshot
+  ansible.builtin.shell: |
+    set -o pipefail
+    curl -o - -L {{ snapshot_url | default(berachain[type][client].snapshot_url) }} | lz4 -c -d - | tar -x -C {{ snapshot_sync_home_dir }}
+  async: 10000
+  poll: 10
+  args:
+    executable: /bin/bash
+    creates: "{{ snapshot_sync_data_dir }}"
+
+- name: Handle Restore validator state file backup
+  block:
+    - name: Restore validator state file
+      ansible.builtin.copy:
+        src: "{{ snapshot_sync_home_dir }}/{{ snapshot_sync_priv_validator_state_file_name }}"
+        dest: "{{ snapshot_sync_data_dir }}"
+        remote_src: true
+        owner: "{{ service_identifier }}"
+        group: "{{ service_identifier }}"
+        mode: "0644"
+
+    - name: Remove validator state file after copy
+      ansible.builtin.file:
+        path: "{{ snapshot_sync_home_dir }}/{{ snapshot_sync_priv_validator_state_file_name }}"
+        state: absent
+  rescue:
+    - name: Handle missing file
+      ansible.builtin.debug:
+        msg: Source file does not exist
+
+- name: Set ownership of data directory
+  ansible.builtin.file:
+    path: "{{ snapshot_sync_data_dir }}"
+    owner: "{{ service_identifier }}"
+    group: "{{ service_identifier }}"
+    recurse: true
+
+- name: Restart service
+  ansible.builtin.systemd:
+    name: "{{ service_identifier }}"
+    state: restarted
