@@ -5,6 +5,7 @@ This Ansible playbook automates the deployment and configuration of Berachain ex
 ## Table of Contents
 
 - [Requirements](#requirements)
+- [Prerequisites](#prerequisites)
 - [Setup](#setup)
 - [Variables](#variables)
 - [Usage](#usage)
@@ -18,7 +19,19 @@ Before using this playbook, ensure the following requirements are met:
 3. **Python**: Python 3.x installed on the control node and all target hosts.
 4. **Privileges**: The user running the playbook must have sudo privileges on the target machines.
 
-**Note**: The following Ansible playbook dynamically retrieves private validator key and node key from HashiCorp Vault. It follows a structured path format: `environment/project/organization/type/file_name` (e.g., `testnet/berachian/encapsulate/validator/priv_validator_key.json`) to fetch the required secrets.
+## Prerequisites
+
+**Install HashiCorp Vault**
+
+This playbook relies on HashiCorp Vault to securely retrieve sensitive files, such as validator and node keys. Follow the [HashiCorp Vault Installation Guide](https://developer.hashicorp.com/vault/tutorials/getting-started/getting-started-install) to set up Vault on your infrastructure.
+
+**Note on Secrets Management**
+The playbook dynamically retrieves private validator keys and node keys from HashiCorp Vault. The keys are expected to follow a structured path format:
+`<environment>/<project>/<organization>/<type>/<file_name>`
+For example:
+`testnet/berachain/encapsulate/validator/priv_validator_key.json`
+
+This structure ensures easy organization and secure retrieval of secrets.
 
 ## Setup
 
@@ -27,7 +40,6 @@ Before using this playbook, ensure the following requirements are met:
 If Ansible is not installed, visit the official documentation for detailed instructions on how to install Ansible on various Linux distributions:
 
 [Ansible Installation Guide](https://docs.ansible.com/ansible/latest/installation_guide/installation_distros.html)
-
 
 ### 2. Clone the repository
 
