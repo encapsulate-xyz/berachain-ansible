@@ -4,8 +4,3 @@ collections:
     version: 6.2.0
   - name: community.general
     version: 9.5.0
-
-roles:
-  - name: fubarhouse.golang
-    src: fubarhouse.golang
-    version: 2.10.0
