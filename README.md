@@ -26,6 +26,7 @@ Before using this playbook, ensure the following requirements are met:
 This playbook relies on HashiCorp Vault to securely retrieve sensitive files, such as validator and node keys. Follow the [HashiCorp Vault Installation Guide](https://developer.hashicorp.com/vault/tutorials/getting-started/getting-started-install) to set up Vault on your infrastructure.
 
 **Note on Secrets Management**
+
 The playbook dynamically retrieves private validator keys and node keys from HashiCorp Vault. The keys are expected to follow a structured path format:
 `<environment>/<project>/<organization>/<type>/<file_name>`
 For example:
