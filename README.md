@@ -18,7 +18,7 @@ Before using this playbook, ensure the following requirements are met:
 3. **Python**: Python 3.x installed on the control node and all target hosts.
 4. **Privileges**: The user running the playbook must have sudo privileges on the target machines.
 
-**Note**: The following ansible playbook dynamically fetches private validator and node keys from hashicorp vault. 
+**Note**: The following Ansible playbook dynamically retrieves private validator key and node key from HashiCorp Vault. It follows a structured path format: `environment/project/organization/type/file_name` (e.g., `testnet/berachian/encapsulate/validator/priv_validator_key.json`) to fetch the required secrets.
 
 ## Setup
 
@@ -42,7 +42,7 @@ cd berachain-ansible
 
 Define your target servers' IP address or DNS in the inventory folder, and select either `mainnet.yml` or `testnet.yml` to update.
 
-Example for testnet.yml
+Example for `testnet.yml`
 
 ```yaml
 ---
@@ -62,11 +62,39 @@ all:
 
 This playbook allows customization through several variables. You can define these variables in the following locations:
 
-- **`group_vars/all.yml`**: Contains all the port configurations.
-- **`group_vars/mainnet.yml`** or **`group_vars/testnet.yml`**: Contains version-specific variables.
+- **`group_vars/all.yml`**: Contains all the port, source url configurations.
+- **`group_vars/mainnet.yml`** or **`group_vars/testnet.yml`**: Contains version specific variables.
 - **`group_vars/vault.yml`**: Store secret variables, such as `jwtsecret`, in this file.
+- There are role specific variables defined in each roles `default/main.yml` and `vars/main.yml`.
 
+**Note**: Make sure to set the `VAULT_TOKEN` environment variable, as it enables logging in and fetching secrets from HashiCorp Vault.
 
+Create a `group_vars/vault.yml` with your preferred ansible-vault password:
+
+```
+ansible-vault create group_vars/vault.yml
+```
+
+Example `group_vars/vault.yml`:
+```
+vault:
+  default:
+    hcp:
+      vault:
+        url: "https://your_hashicorp_vault_url"
+  mainnet:
+    berachain:
+      validator:
+        jwt_secret: "yout_json_web_token_secret"
+      fullnode:
+        jwt_secret: "yout_json_web_token_secret"
+  testnet:
+    berachain:
+      validator:
+        jwt_secret: "yout_json_web_token_secret"
+      fullnode:
+        jwt_secret: "yout_json_web_token_secret"
+```
 
 ### Usage
 
@@ -77,18 +105,30 @@ This playbook allows customization through several variables. You can define the
 
 2. Create a `ansible_vault_password` file containing ansible-vault password
 
-3. Then run the playbook:
+3. Configure your remote server username and private key file path in the `ansible.cfg` file. Additionally, set the SSH port for your server by adjusting the `ansible_port` variable in `group_vars/all.yml`.
+
+4. Then run the playbook:
 
 - To deploy consensus client:
 
 ```bash
-ansible-playbook setup_consensus_client.yml -l validator.berachain.testnet.encapsulate.xyz
+ansible-playbook setup_consensus_client.yml -l validator.berachain.testnet.encapsulate.xyz -e "fetch_secrets=true"
 ```
+
+**Note**: The default value for `fetch_secrets` is false, which disables fetching keys from Hashicorp Vault.
+
 - To deploy execution client:
 
 ```bash
 ansible-playbook setup_execution_client.yml -l validator.berachain.testnet.encapsulate.xyz
 ```
+
+- To sync consensus client from a lz4 compressed snapshot url:
+
+```bash
+ansible-playbook snapshot_sync.yml -l validator.berachain.testnet.encapsulate.xyz
+```
+
 After you run the playbook, it will ask for confirmation, displaying all the variables and the IP address or DNS of the server you are going to deploy.
 
 Example output:
@@ -102,7 +142,7 @@ ok: [validator.berachain.testnet.encapsulate.xyz] => {
         "Project: berachain",
         "Environment: testnet",
         "Type: validator",
-        "Version: v0.11.0",
+        "Version: v0.2.0-alpha.8",
         "Username: berachain-consensus",
         "Service Name: berachain-consensus",
         "Operating System: linux",
@@ -116,15 +156,15 @@ ok: [validator.berachain.testnet.encapsulate.xyz]
 TASK [Display all port variables] **************************************************************************************************************
 ok: [validator.berachain.testnet.encapsulate.xyz] => {
     "msg": [
-        "P2P Port: 10156",
-        "RPC Port: 10157",
-        "ABCI Port: 10158",
-        "Prometheus Port: 10160",
-        "Pprof Port: 10161",
-        "REST API Port: 10117",
-        "Rosetta Port: 10180",
-        "gRPC Port: 10190",
-        "gRPC-Web Port: 10191"
+        "P2P Port: 20356",
+        "RPC Port: 20357",
+        "ABCI Port: 20358",
+        "Prometheus Port: 20360",
+        "Pprof Port: 20361",
+        "REST API Port: 20317",
+        "Rosetta Port: 20380",
+        "gRPC Port: 20390",
+        "gRPC-Web Port: 20391"
     ]
 }
 
