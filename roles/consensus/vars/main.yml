@@ -43,6 +43,7 @@ consensus_type_settings:
       default: 0.0.0.0
   # app.toml
   node_api:
+    enable: true
     address:
       validator: tcp://127.0.0.1
       fullnode: tcp://0.0.0.0
