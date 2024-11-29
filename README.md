@@ -114,7 +114,9 @@ vault:
 1. First, install the dependencies:
 
    ```bash
-   ansible-galaxy install -r requirements.yml
+  ansible-galaxy role install -r roles/requirements.yml
+  ansible-galaxy collection install -r collections/requirements.yml
+   ```
 
 2. Create a `ansible_vault_password` file containing ansible-vault password
 
