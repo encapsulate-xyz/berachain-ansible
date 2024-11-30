@@ -32,14 +32,14 @@ consensus_ufw_rules:
       from: any
       comment: rpc_port
 
-    - port: "{{ rest_api_port }}"
-      proto: tcp
-      rule: limit
-      from: any
-      comment: rest_api_port
-
     - port: "{{ grpc_port }}"
       proto: tcp
       rule: limit
       from: any
       comment: grpc_port
+    
+    - port: "{{ node_api_port }}"
+      proto: tcp
+      rule: limit
+      from: any
+      comment: node_api_port

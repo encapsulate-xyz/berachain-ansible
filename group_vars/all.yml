@@ -41,7 +41,6 @@ berachain:
           abci: 58
           prometheus: 60
           pprof: 61
-          rest_api: 17
           rosetta: 80
           grpc: 90
           grpc_web: 91
@@ -67,7 +66,6 @@ berachain:
           abci: 58
           prometheus: 60
           pprof: 61
-          rest_api: 17
           rosetta: 80
           grpc: 90
           grpc_web: 91
