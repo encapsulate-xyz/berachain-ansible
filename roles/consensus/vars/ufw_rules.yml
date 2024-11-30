@@ -43,3 +43,9 @@ consensus_ufw_rules:
       rule: limit
       from: any
       comment: grpc_port
+    
+    - port: "{{ node_api_port }}"
+      proto: tcp
+      rule: limit
+      from: any
+      comment: node_api_port
