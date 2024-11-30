@@ -36,7 +36,7 @@
 
 - name: Copy config file
   ansible.builtin.template:
-    src: "{{ env }}/config.cfg.j2"
+    src: "{{ env }}/config.json.j2"
     dest: "{{ execution_config_file_path }}"
     owner: "{{ service_identifier }}"
     group: "{{ service_identifier }}"

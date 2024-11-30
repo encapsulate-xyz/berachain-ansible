@@ -2,7 +2,7 @@
 execution_jwt_secret_file_name: jwt.hex
 
 execution_nether_genesis_file_name: eth-nether-genesis.json
-execution_config_file_name: config.cfg
+execution_config_file_name: config.json
 execution_nlog_file_name: NLog.config
 
 execution_default_binary_name: nethermind
