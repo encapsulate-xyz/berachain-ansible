@@ -13,6 +13,7 @@
   ansible.builtin.systemd:
     name: "{{ service_identifier }}"
     state: restarted
+    enabled: true
 
 - name: Stop service
   ansible.builtin.systemd:
