@@ -38,7 +38,7 @@ halt-time = 0
 # It has no bearing on application state pruning which is determined by the
 # "pruning-*" configurations.
 #
-# Note: CometBFT block pruning is dependent on this parameter in conjunction
+# Note: CometBFT block pruning is dependant on this parameter in conjunction
 # with the unbonding (safety threshold) period, state pruning and state sync
 # snapshot parameters to determine the correct minimum value of
 # ResponseCommit.RetainHeight.
@@ -47,13 +47,24 @@ min-retain-blocks = 0
 # InterBlockCache enables inter-block caching.
 inter-block-cache = true
 
-# IavlCacheSize set the size of the iavl tree cache (in number of nodes).
-iavl-cache-size = 25000
+# IndexEvents defines the set of events in the form {eventType}.{attributeKey},
+# which informs CometBFT what to index. If empty, all events will be indexed.
+#
+# Example:
+# ["message.sender", "message.recipient"]
+index-events = []
 
-# IAVLDisableFastNode enables or disables the fast node feature of IAVL. 
+# IavlCacheSize set the size of the iavl tree cache (in number of nodes).
+iavl-cache-size = 781250
+
+# IAVLDisableFastNode enables or disables the fast node feature of IAVL.
 # Default is false.
 iavl-disable-fastnode = true
 
+# AppDBBackend defines the database backend type to use for the application and snapshots DBs.
+# An empty string indicates that a fallback will be used.
+# The fallback is the db_backend value set in CometBFT's config.toml.
+app-db-backend = "pebbledb"
 
 ###############################################################################
 ###                         Telemetry Configuration                         ###
@@ -62,7 +73,7 @@ iavl-disable-fastnode = true
 [telemetry]
 
 # Prefixed with keys to separate services.
-service-name = ""
+service-name = "beacond_node"
 
 # Enabled enables the application telemetry functionality. When enabled,
 # an in-memory sink is also enabled by default. Operators may also enabled
@@ -70,24 +81,23 @@ service-name = ""
 enabled = true
 
 # Enable prefixing gauge values with hostname.
-enable-hostname = false
+enable-hostname = true
 
 # Enable adding hostname to labels.
-enable-hostname-label = false
+enable-hostname-label = true
 
 # Enable adding service to labels.
-enable-service-label = false
+enable-service-label = true
 
 # PrometheusRetentionTime, when positive, enables a Prometheus metrics sink.
-prometheus-retention-time = 0
+prometheus-retention-time = 60
 
 # GlobalLabels defines a global set of name/value label tuples applied to all
 # metrics emitted using the wrapper functions defined in telemetry package.
 #
 # Example:
 # [["chain_id", "cosmoshub-1"]]
-global-labels = [
-]
+global-labels = []
 
 # MetricsSink defines the type of metrics sink to use.
 metrics-sink = ""
@@ -98,27 +108,41 @@ statsd-addr = ""
 
 # DatadogHostname defines the hostname to use when emitting metrics to
 # Datadog. Only utilized if MetricsSink is set to "dogstatsd".
-datadog-hostname = ""
+datadog-hostname = "my_beacond_node"
 
 ###############################################################################
 ###                                BeaconKit                                ###
 ###############################################################################
 
+[beacon-kit]
+# ChainSpec is the type of chain spec to use.
+chain-spec = "mainnet"
+
+# ChainSpecFilePath is the path to the chain spec file to use.
+chain-spec-file = ""
+
+# ShutdownTimeout is the maximum time to wait for the node to gracefully
+# shutdown before forcing an exit.
+shutdown-timeout = "5m0s"
+
 [beacon-kit.engine]
 # HTTP url of the execution client JSON-RPC endpoint.
 rpc-dial-url = "{{ consensus_execution_client_jsonrpc_endpoint }}"
 
-# Number of retries before shutting down consensus client.
-rpc-retries = "3"
-
 # RPC timeout for execution client requests.
-rpc-timeout = "900ms"
+rpc-timeout = "2s"
+
+# RPC retry interval for execution client requests.
+rpc-retry-interval = "100ms"
+
+# RPC max retry interval for execution client requests.
+rpc-max-retry-interval = "10s"
 
 # Interval for the startup check.
 rpc-startup-check-interval = "3s"
 
 # Interval for the JWT refresh.
-rpc-jwt-refresh-interval = "20s"
+rpc-jwt-refresh-interval = "30s"
 
 # Path to the execution client JWT-secret
 jwt-secret-path = "{{ consensus_jwt_secret_path }}"
@@ -127,7 +151,7 @@ jwt-secret-path = "{{ consensus_jwt_secret_path }}"
 # TimeFormat is a string that defines the format of the time in the logger.
 time-format = "RFC3339"
 
-# LogLevel is the level of logging. Logger will log messages with verbosity up 
+# LogLevel is the level of logging. Logger will log messages with verbosity up
 # to LogLevel.
 log-level = "info"
 
@@ -144,6 +168,8 @@ implementation = "crate-crypto/go-kzg-4844"
 
 [beacon-kit.payload-builder]
 # Enabled determines if the local payload builder is enabled.
+# It should be enabled for validators, but it can be disabled
+# for full nodes.
 enabled = true
 
 # Post bellatrix, this address will receive the transaction fees produced by any blocks
@@ -161,7 +187,7 @@ graffiti = "{{ org }}"
 
 # EnableOptimisticPayloadBuilds enables building the next block's payload optimistically in
 # process-proposal to allow for the execution client to have more time to assemble the block.
-enable-optimistic-payload-builds = "true"
+enable-optimistic-payload-builds = "false"
 
 [beacon-kit.block-store-service]
 # Enabled determines if the block store service is enabled.

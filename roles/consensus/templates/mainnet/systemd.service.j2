@@ -5,12 +5,12 @@ Description= {{ service_identifier }} layer client
 User={{ service_identifier }}
 Group={{ service_identifier }}
 WorkingDirectory={{ consensus_home_dir }}
-ExecStart={{consensus_bin_dir }}/{{ service_identifier }} start --home {{ consensus_home_dir }}
+ExecStart={{ consensus_bin_dir }}/{{ service_identifier }} start --home {{ consensus_home_dir }}
 Restart=always
 RestartSec=4
 LimitNOFILE=65536
 MemoryMax=64G
-StandardOutput=append:{{consensus_log_file_path }}
+StandardOutput=append:{{ consensus_log_file_path }}
 StandardError=inherit
 
 [Install]

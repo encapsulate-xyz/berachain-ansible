@@ -105,7 +105,7 @@
 
 - name: Copy consensus client systemd service file
   ansible.builtin.template:
-    src: "{{ env }}/bera_consensus.service.j2"
+    src: "{{ env }}/systemd.service.j2"
     dest: /etc/systemd/system/{{ service_identifier }}.service
     owner: root
     group: root
