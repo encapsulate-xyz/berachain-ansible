@@ -9,9 +9,9 @@
 
 - name: Unarchive the binary
   vars:
-    suffix_url: "{{ execution_default_binary_name }}-{{ berachain[type].execution.version }}-{{ ansible_system | lower }}-x64.zip"
+    suffix_url: "{{ execution_default_binary_name }}-{{ berachain[type].execution.version }}-x86_64-unknown-linux-gnu.tar.gz"
   ansible.builtin.unarchive:
-    src: "{{ berachain[type].execution.source_url }}/{{ suffix_url }}"
+    src: "{{ berachain[type].execution.source_url }}/{{ berachain[type].execution.version }}/{{ suffix_url }}"
     dest: "{{ tmp_dir }}/{{ project }}"
     remote_src: true
     owner: root
@@ -29,26 +29,6 @@
     mode: "0755"
   notify:
     - Restart service
-
-- name: Copy plugins
-  ansible.builtin.copy:
-    src: "{{ tmp_dir }}/{{ project }}/plugins"
-    dest: "{{ execution_home_dir }}"
-    remote_src: true
-    owner: root
-    group: root
-    force: true
-    mode: "0755"
-
-- name: Copy Nlog.config
-  ansible.builtin.copy:
-    src: "{{ tmp_dir }}/{{ project }}/NLog.config"
-    dest: "{{ execution_nlog_file_path }}"
-    remote_src: true
-    owner: "{{ service_identifier }}"
-    group: "{{ service_identifier }}"
-    force: true
-    mode: "0644"
 
 - name: Clear tmp directory
   ansible.builtin.file:
