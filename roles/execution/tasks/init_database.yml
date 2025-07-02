@@ -1,5 +1,5 @@
 ---
-- name: Initialize Nethermind from genesis
+- name: Initialize execution data from genesis
   ansible.builtin.command:
     cmd: >-
       {{ execution_bin_dir }}/{{ service_identifier }} init
