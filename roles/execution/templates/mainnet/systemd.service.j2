@@ -1,0 +1,40 @@
+[Unit]
+Description= {{ service_identifier }} layer client
+
+[Service]
+Type=simple
+User={{ service_identifier }}
+Group={{ service_identifier }}
+WorkingDirectory={{ execution_home_dir }}
+ExecStart={{ execution_bin_dir }}/{{ service_identifier }} node \
+--datadir {{ execution_data_dir }} \
+--chain {{ execution_genesis_file_path }} \
+--bootnodes {{ bootnodes }} \
+--trusted-peers {{ peers }} \
+--nat extip:{{ ansible_default_ipv4.address }} \
+--authrpc.addr 127.0.0.1 \
+--authrpc.port {{ execution_engine_port }} \
+--authrpc.jwtsecret {{ execution_jwt_secret_path }} \
+--port {{ execution_p2p_port }} \
+--metrics {{ execution_metrics_port }} \
+--http \
+--http.addr {{ execution_type_settings.json_rpc.address[type] }} \
+--http.port {{ execution_json_rpc_port }} \
+--http.corsdomain '*' \
+--ipcpath /tmp/reth.ipc.{{ execution_json_rpc_port }} \
+--discovery.port {{ execution_network_discovery_port }} \
+--log.file.directory {{ execution_log_dir }} \
+--log.journald \
+--engine.persistence-threshold 0 \
+--engine.memory-block-buffer-target 0
+Restart=always
+RestartSec=4
+LimitNOFILE=1000000
+KillSignal=SIGINT
+TimeoutStopSec=900s
+MemoryMax=64G
+StandardOutput=append:{{ execution_log_file_path }}
+StandardError=inherit
+
+[Install]
+WantedBy=multi-user.target

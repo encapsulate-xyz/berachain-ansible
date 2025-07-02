@@ -23,7 +23,7 @@ berachain:
   validator:
     port_prefix: 203
     execution:
-      source_url: https://nethdev.blob.core.windows.net/builds
+      source_url: https://github.com/paradigmxyz/reth/releases/download
       ports:
         suffix:
           engine: 51
@@ -48,7 +48,7 @@ berachain:
   fullnode:
     port_prefix: 204
     execution:
-      source_url: https://nethdev.blob.core.windows.net/builds
+      source_url: https://github.com/paradigmxyz/reth/releases/download
       ports:
         suffix:
           engine: 51

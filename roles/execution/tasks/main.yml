@@ -7,11 +7,20 @@
   ansible.builtin.include_tasks: tasks/apply_ufw_rules.yml
   loop: "{{ execution_ufw_rules[type] }}"
 
+- name: Set bootnodes
+  ansible.builtin.set_fact:
+    bootnodes: "{{ lookup('file', 'files/{{ env }}/bootnodes.txt').splitlines() | join(',') }}"
+
+- name: Set peers
+  ansible.builtin.set_fact:
+    peers: "{{ lookup('file', 'files/{{ env }}/peers.txt').splitlines() | join(',') }}"
+
 - name: Include user creation task
   ansible.builtin.include_tasks: tasks/create_user_and_directories.yml
   vars:
     home: "{{ execution_home_dir }}"
     directories: "{{ execution_directories }}"
+    log_file_path: "{{ execution_log_file_path }}"
 
 - name: Include extract binary task
   ansible.builtin.include_tasks: extract_binary.yml
@@ -26,27 +35,21 @@
 
 - name: Copy genesis file
   ansible.builtin.copy:
-    src: "{{ env }}/eth_nether_genesis.json"
-    dest: "{{ execution_nether_genesis_file_path }}"
+    src: "{{ env }}/eth_genesis.json"
+    dest: "{{ execution_genesis_file_path }}"
     owner: "{{ service_identifier }}"
     group: "{{ service_identifier }}"
     mode: "0644"
   notify:
     - Restart service
 
-- name: Copy config file
-  ansible.builtin.template:
-    src: "{{ env }}/config.json.j2"
-    dest: "{{ execution_config_file_path }}"
-    owner: "{{ service_identifier }}"
-    group: "{{ service_identifier }}"
-    mode: "0644"
-  notify:
-    - Restart service
+- name: Include init database task
+  ansible.builtin.include_tasks: init_database.yml
+  when: init_database | default(false) | bool
 
 - name: Copy execution client systemd service file
   ansible.builtin.template:
-    src: "{{ env }}/bera_execution.service.j2"
+    src: "{{ env }}/systemd.service.j2"
     dest: /etc/systemd/system/{{ service_identifier }}.service
     owner: root
     group: root

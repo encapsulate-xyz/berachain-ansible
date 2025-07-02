@@ -1,11 +1,10 @@
 ---
 execution_jwt_secret_file_name: jwt.hex
 
-execution_nether_genesis_file_name: eth-nether-genesis.json
-execution_config_file_name: config.json
-execution_nlog_file_name: NLog.config
+execution_genesis_file_name: eth-genesis.json
+execution_config_file_name: config.toml
 
-execution_default_binary_name: nethermind
+execution_default_binary_name: reth
 
 execution_type_settings:
   json_rpc:
