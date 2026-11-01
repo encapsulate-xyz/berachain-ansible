@@ -1,0 +1,10 @@
+name: Ansible CI
+
+on:
+  pull_request:
+  push:
+    branches: ["main"]
+
+jobs:
+  ansible:
+    uses: encapsulate-xyz/.github/.github/workflows/ansible-ci.yml@main
