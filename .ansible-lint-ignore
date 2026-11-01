@@ -1,0 +1,6 @@
+# This file contains ignores rule violations for ansible-lint
+roles/consensus/tasks/build_binary.yml var-naming[no-role-prefix]
+roles/consensus/tasks/main.yml var-naming[no-role-prefix]
+roles/consensus/vars/ufw_rules.yml yaml[trailing-spaces]
+roles/execution/tasks/init_database.yml var-naming[no-role-prefix]
+roles/execution/tasks/main.yml var-naming[no-role-prefix]
