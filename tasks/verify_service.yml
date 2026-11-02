@@ -1,0 +1,86 @@
+---
+# Checks a service after a deploy: it is running, systemd isn't restarting it, and optionally it
+# reports the pinned version and answers its health check. The same file is in every chain repo;
+# each playbook passes what fits its service:
+#   log_file_path        log to show when the check fails (default: the service's journal)
+#   version_command      prints the installed version
+#   expected_version     what that output must contain (default: vars[project][type].version)
+#   health_url           local URL that answers once the service is up
+#   health_method        default GET; health_body (sent as JSON) for a JSON-RPC call
+#   health_status_codes  statuses that count as healthy (default [200])
+#   health_retries       10s apart (default 12)
+- name: Verify service after deploy
+  when: verify_service | default(true) | bool and not ansible_check_mode
+  block:
+    - name: Wait for the service to settle
+      ansible.builtin.wait_for:
+        timeout: 30
+
+    - name: Get service state
+      ansible.builtin.systemd_service:
+        name: "{{ service_identifier }}"
+      register: service_state
+
+    # NRestarts counts only systemd's own restarts, so it going up means the service is crash looping
+    - name: Wait for any restart by systemd
+      ansible.builtin.wait_for:
+        timeout: 15
+
+    - name: Get service state again
+      ansible.builtin.systemd_service:
+        name: "{{ service_identifier }}"
+      register: service_state_again
+
+    - name: Check the service is still running
+      ansible.builtin.assert:
+        that:
+          - service_state_again.status.ActiveState == "active"
+          - service_state_again.status.SubState == "running"
+          - service_state_again.status.NRestarts == service_state.status.NRestarts
+        fail_msg: >-
+          {{ service_identifier }} is {{ service_state_again.status.ActiveState }}/{{ service_state_again.status.SubState }},
+          systemd restarted it {{ service_state_again.status.NRestarts | int - service_state.status.NRestarts | int }} times in 15s
+        quiet: true
+
+    - name: Get installed version
+      ansible.builtin.command: "{{ version_command }}"
+      register: installed_version
+      changed_when: false
+      when: version_command is defined
+
+    - name: Check the installed version
+      ansible.builtin.assert:
+        that: (expected_version | default(vars[project][type].version)) | string in installed_version.stdout ~ installed_version.stderr
+        fail_msg: "Expected {{ expected_version | default(vars[project][type].version) }}, got: {{ installed_version.stdout ~ installed_version.stderr }}"
+        quiet: true
+      when: version_command is defined
+
+    - name: Check service health
+      ansible.builtin.uri:
+        url: "{{ health_url }}"
+        method: "{{ health_method | default('GET') }}"
+        body: "{{ health_body | default(omit) }}"
+        body_format: "{{ 'json' if health_body is defined else omit }}"
+        status_code: "{{ health_status_codes | default([200]) }}"
+      register: health_response
+      until: health_response.status in health_status_codes | default([200])
+      delay: 10
+      retries: "{{ health_retries | default(12) }}"
+      when: health_url is defined
+
+  rescue:
+    - name: Read the end of the service log
+      ansible.builtin.command: >-
+        {{ 'tail -n 50 ' ~ log_file_path if log_file_path is defined
+           else 'journalctl --unit ' ~ service_identifier ~ ' --lines 50 --no-pager' }}
+      register: service_log
+      changed_when: false
+      failed_when: false
+
+    - name: Display the end of the service log
+      ansible.builtin.debug:
+        var: service_log.stdout_lines
+
+    - name: Fail the deploy
+      ansible.builtin.fail:
+        msg: "{{ service_identifier }} is not healthy after the deploy: {{ ansible_failed_result.msg }}"

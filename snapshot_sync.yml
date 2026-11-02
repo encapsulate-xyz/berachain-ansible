@@ -28,3 +28,14 @@
             - name: Run snapshot sync role for consensus client
               ansible.builtin.include_role:
                 name: snapshot_sync
+                public: true
+
+  post_tasks:
+    - name: Verify consensus client
+      when: type in allowed_node_types
+      block:
+        - name: Include verify service task
+          ansible.builtin.include_tasks: tasks/verify_service.yml
+          vars:
+            log_file_path: "{{ snapshot_sync_home_dir }}/log/{{ service_identifier }}.log"
+            health_url: "http://localhost:{{ rpc_port }}/health"

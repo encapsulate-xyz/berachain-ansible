@@ -30,3 +30,18 @@
         - name: Include execution role
           ansible.builtin.include_role:
             name: execution
+            public: true
+
+  post_tasks:
+    - name: Verify execution client
+      when: type in allowed_node_types
+      block:
+        - name: Include verify service task
+          ansible.builtin.include_tasks: tasks/verify_service.yml
+          vars:
+            log_file_path: "{{ execution_log_file_path }}"
+            version_command: "{{ execution_bin_dir }}/{{ service_identifier }} --version"
+            expected_version: "{{ vars[project][type][client].version | regex_replace('^v', '') }}"
+            health_url: "http://localhost:{{ execution_json_rpc_port }}"
+            health_method: POST
+            health_body: {"jsonrpc": "2.0", "method": "web3_clientVersion", "params": [], "id": 1}

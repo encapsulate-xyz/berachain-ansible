@@ -30,3 +30,16 @@
         - name: Include consensus role
           ansible.builtin.include_role:
             name: consensus
+            public: true
+
+  post_tasks:
+    - name: Verify consensus client
+      when: type in allowed_node_types
+      block:
+        - name: Include verify service task
+          ansible.builtin.include_tasks: tasks/verify_service.yml
+          vars:
+            log_file_path: "{{ consensus_log_file_path }}"
+            version_command: "{{ consensus_bin_dir }}/{{ service_identifier }} version --home {{ consensus_home_dir }}"
+            expected_version: "{{ vars[project][type][client].version }}"
+            health_url: "http://localhost:{{ rpc_port }}/health"
