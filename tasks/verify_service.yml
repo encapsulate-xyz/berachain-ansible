@@ -3,7 +3,7 @@
 # reports the pinned version and answers its health check. The same file is in every chain repo;
 # each playbook passes what fits its service:
 #   log_file_path        log to show when the check fails (default: the service's journal)
-#   version_command      prints the installed version
+#   version_command      prints the installed version; runs as the service's user, with its environment
 #   expected_version     what that output must contain (default: vars[project][type].version)
 #   health_url           local URL that answers once the service is up
 #   health_method        default GET; health_body (sent as JSON) for a JSON-RPC call
@@ -42,16 +42,25 @@
           systemd restarted it {{ service_state_again.status.NRestarts | int - service_state.status.NRestarts | int }} times in 15s
         quiet: true
 
+    # as the service's user and with the running service's environment (its EnvironmentFile and
+    # Environment= lines), which some binaries need, such as a library path or JAVA_HOME
     - name: Get installed version
-      ansible.builtin.command: "{{ version_command }}"
+      ansible.builtin.shell: |
+        while IFS= read -r -d '' variable; do export "$variable"; done < /proc/{{ service_state_again.status.MainPID }}/environ
+        exec {{ 'runuser -u ' ~ service_state_again.status.User ~ ' -- ' if service_state_again.status.User | default('') else '' }}{{ version_command }}
+      args:
+        executable: /bin/bash
       register: installed_version
       changed_when: false
       when: version_command is defined
 
+    # not default(), which would read vars[project] even when expected_version is set
     - name: Check the installed version
+      vars:
+        wanted_version: "{{ expected_version if expected_version is defined else vars[project][type].version }}"
       ansible.builtin.assert:
-        that: (expected_version | default(vars[project][type].version)) | string in installed_version.stdout ~ installed_version.stderr
-        fail_msg: "Expected {{ expected_version | default(vars[project][type].version) }}, got: {{ installed_version.stdout ~ installed_version.stderr }}"
+        that: wanted_version | string in installed_version.stdout ~ installed_version.stderr
+        fail_msg: "Expected {{ wanted_version }}, got: {{ installed_version.stdout ~ installed_version.stderr }}"
         quiet: true
       when: version_command is defined
 
